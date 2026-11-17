@@ -1,0 +1,29 @@
+:root {
+  color-scheme: light;
+
+  --paper: #f2ecdf;
+  --paper-bright: #faf5e9;
+  --paper-deep: #e5dcc9;
+  --paper-dim: #d9ceb8;
+  --ink: #1b1a16;
+  --ink-soft: #575248;
+  --ink-muted: #6e675a;
+  --rule: #cfc4b0;
+  --rule-strong: #a89b84;
+  --lime: #c9f04a;
+  --lime-deep: #5f7000;
+  --lime-ink: #202805;
+  --coral: #ef5b3c;
+  --coral-deep: #b53720;
+  --blush: #f3d8cd;
+  --danger: #a72c16;
+
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Instrument Sans Variable', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+
+  --rail-width: 372px;
+  --page-gutter: clamp(24px, 4.4vw, 64px);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-offset: 4px 4px 0 var(--paper-deep);
+}
