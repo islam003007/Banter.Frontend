@@ -151,7 +151,7 @@ export function ConversationRail() {
             type="button"
             className="icon-button rail__close"
             onClick={closeDrawer}
-            aria-label="Close conversations"
+            aria-label="Close channels"
           >
             <X size={20} aria-hidden="true" />
           </button>

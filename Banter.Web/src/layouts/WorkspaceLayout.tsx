@@ -86,14 +86,14 @@ export function WorkspaceLayout() {
         }`.trim()}
       >
         <a className="skip-link" href="#main-content">
-          Skip to the conversation
+          Skip to the channel
         </a>
         <ConversationRail />
         {drawerOpen && (
           <button
             type="button"
             className="rail-scrim"
-            aria-label="Close conversations"
+            aria-label="Close channels"
             onClick={() => setDrawerOpen(false)}
           />
         )}

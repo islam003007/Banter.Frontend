@@ -41,7 +41,7 @@ export function MePage() {
           aria-controls="conversation-rail"
         >
           <ArrowLeft size={15} aria-hidden="true" />
-          Conversations
+          Channels
         </button>
         <p className="mono page__kicker">your seat</p>
       </header>

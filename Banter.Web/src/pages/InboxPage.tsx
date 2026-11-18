@@ -326,7 +326,7 @@ export function InboxPage() {
           <div
             className="welcome__threads"
             role="status"
-            aria-label="Loading recent conversations"
+            aria-label="Loading recent channels"
           >
             <ThreadSkeleton />
             <ThreadSkeleton />

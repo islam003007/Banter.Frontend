@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 export function LoadingRows({ count = 5 }: { count?: number }) {
   return (
-    <div className="loading-rows" role="status" aria-label="Loading conversations">
+    <div className="loading-rows" role="status" aria-label="Loading channels">
       {Array.from({ length: count }).map((_, index) => (
         <div className="loading-row" key={index}>
           <span className="loading-row__avatar" />

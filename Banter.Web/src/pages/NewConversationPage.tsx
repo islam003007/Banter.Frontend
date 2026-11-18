@@ -145,7 +145,7 @@ export function NewConversationPage() {
           aria-controls="conversation-rail"
         >
           <ArrowLeft size={15} aria-hidden="true" />
-          Conversations
+          Channels
         </button>
         <p className="mono page__kicker">start a thread</p>
         <h1 id="new-thread-title">Find your people.</h1>

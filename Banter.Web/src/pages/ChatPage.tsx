@@ -530,7 +530,7 @@ export function ChatPage() {
           type="button"
           className="icon-button chat__rail-toggle"
           onClick={openDrawer}
-          aria-label="Open conversations"
+          aria-label="Open channels"
           aria-expanded={drawerOpen}
           aria-controls="conversation-rail"
         >
@@ -616,10 +616,10 @@ export function ChatPage() {
           <div className="chat__state">
             <p className="chat__state-kicker mono">signal interrupted</p>
             <ErrorState
-              title={isForbidden ? 'You cannot open this thread.' : 'The history did not load.'}
+              title={isForbidden ? 'You cannot open this channel.' : 'The history did not load.'}
               message={
                 isForbidden
-                  ? 'This conversation may have been left, or your session does not have access to it.'
+                  ? 'This channel may have been left, or your session does not have access to it.'
                   : errorMessage(messagesQuery.error)
               }
               onRetry={isForbidden ? undefined : () => void messagesQuery.refetch()}
