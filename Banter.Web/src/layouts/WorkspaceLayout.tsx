@@ -97,7 +97,12 @@ export function WorkspaceLayout() {
             onClick={() => setDrawerOpen(false)}
           />
         )}
-        <main className="workspace__main" id="main-content" tabIndex={-1}>
+        <main
+          className="workspace__main"
+          id="main-content"
+          tabIndex={-1}
+          aria-hidden={drawerOpen ? true : undefined}
+        >
           <Outlet />
         </main>
       </div>
