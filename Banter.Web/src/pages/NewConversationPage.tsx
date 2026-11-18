@@ -12,10 +12,12 @@ import {
   X,
 } from 'lucide-react';
 import { api, errorMessage } from '../lib/api';
+import { BOT_NAMES, botPersona, resolveIsBot } from '../lib/bots';
 import { queryKeys } from '../lib/queryKeys';
 import type { UserSearchResult } from '../lib/types';
 import { useAuth } from '../auth/AuthProvider';
 import { useRail } from '../layouts/RailContext';
+import { BotBadge } from '../components/BotBadge';
 import { Monogram, PresenceDot } from '../components/Monogram';
 
 type Mode = 'direct' | 'group';
@@ -70,6 +72,10 @@ export function NewConversationPage() {
       setSelected([result]);
       return;
     }
+    if (resolveIsBot(result.isBot, result.displayName)) {
+      setError('AI teammates join direct threads only.');
+      return;
+    }
     setSelected((current) =>
       current.some((person) => person.id === result.id)
         ? current.filter((person) => person.id !== result.id)
@@ -82,6 +88,10 @@ export function NewConversationPage() {
     setError(null);
     if (next === 'direct') {
       setSelected((current) => current.slice(0, 1));
+    } else {
+      setSelected((current) =>
+        current.filter((person) => !resolveIsBot(person.isBot, person.displayName)),
+      );
     }
   };
 
@@ -93,6 +103,10 @@ export function NewConversationPage() {
     mode === 'direct'
       ? selected.length === 1
       : selected.length >= 2 && groupTitle.trim().length > 0;
+  const directPerson = mode === 'direct' && selected.length === 1 ? selected[0] : null;
+  const directIsBot = directPerson
+    ? resolveIsBot(directPerson.isBot, directPerson.displayName)
+    : false;
 
   const handleCreate = async () => {
     if (!canCreate || pending) return;
@@ -179,7 +193,7 @@ export function NewConversationPage() {
 
           <p className="search-field__hint mono">
             {mode === 'direct'
-              ? 'pick one person to open a direct thread'
+              ? 'pick one person or AI teammate to open a direct thread'
               : 'pick two or more people, then name the group'}
           </p>
 
@@ -199,6 +213,13 @@ export function NewConversationPage() {
                 ))}
               </div>
             </div>
+          )}
+
+          {showInitialHint && (
+            <p className="search-bots-note mono">
+              <BotBadge />
+              <span>{BOT_NAMES} are AI teammates. They answer in direct threads.</span>
+            </p>
           )}
 
           {!showInitialHint && searchQuery.isPending && (
@@ -229,12 +250,25 @@ export function NewConversationPage() {
             <div className="search-results" aria-label="Search results">
               {results.map((result) => {
                 const isSelected = selected.some((person) => person.id === result.id);
+                const isBot = resolveIsBot(result.isBot, result.displayName);
+                const persona = isBot
+                  ? botPersona(result.displayName, result.botPersona)
+                  : null;
+                const unavailable = mode === 'group' && isBot;
                 return (
                   <button
                     key={result.id}
                     type="button"
-                    className={`search-result ${isSelected ? 'is-selected' : ''}`.trim()}
+                    className={`search-result ${isSelected ? 'is-selected' : ''} ${
+                      unavailable ? 'is-unavailable' : ''
+                    }`.trim()}
                     aria-pressed={isSelected}
+                    disabled={unavailable}
+                    title={
+                      unavailable
+                        ? `${result.displayName} is an AI teammate and joins direct threads only`
+                        : undefined
+                    }
                     onClick={() => selectUser(result)}
                   >
                     <span className="search-result__avatar">
@@ -243,17 +277,35 @@ export function NewConversationPage() {
                         src={result.profilePictureUrl}
                         size="sm"
                       />
-                      <PresenceDot
-                        online={result.isOnline}
-                        label={`${result.displayName} is ${result.isOnline ? 'online' : 'offline'}`}
-                      />
+                      {!isBot && (
+                        <PresenceDot
+                          online={result.isOnline}
+                          label={`${result.displayName} is ${result.isOnline ? 'online' : 'offline'}`}
+                        />
+                      )}
                     </span>
                     <span className="search-result__identity">
-                      <span className="search-result__name">{result.displayName}</span>
-                      <span className="search-result__email">{result.email}</span>
+                      <span className="search-result__name-row">
+                        <span className="search-result__name">{result.displayName}</span>
+                        {isBot && <BotBadge />}
+                      </span>
+                      <span
+                        className={
+                          isBot ? 'search-result__persona' : 'search-result__email'
+                        }
+                      >
+                        {isBot ? persona ?? 'AI teammate' : result.email}
+                        {unavailable && <span className="search-result__limit"> · DM only</span>}
+                      </span>
                     </span>
                     <span className="search-result__check" aria-hidden="true">
-                      {isSelected ? <Check size={16} /> : <span className="search-result__plus">+</span>}
+                      {unavailable ? (
+                        <span className="search-result__plus">–</span>
+                      ) : isSelected ? (
+                        <Check size={16} />
+                      ) : (
+                        <span className="search-result__plus">+</span>
+                      )}
                     </span>
                   </button>
                 );
@@ -286,25 +338,31 @@ export function NewConversationPage() {
           {selected.length === 0 ? (
             <p className="builder__empty">
               {mode === 'direct'
-                ? 'Search on the left and pick one person.'
+                ? 'Search on the left and pick one person or AI teammate.'
                 : 'Search on the left and pick at least two people.'}
             </p>
           ) : (
             <ul className="builder__selected">
-              {selected.map((person) => (
-                <li key={person.id}>
-                  <Monogram name={person.displayName} src={person.profilePictureUrl} size="xs" />
-                  <span>{person.displayName}</span>
-                  <button
-                    type="button"
-                    className="builder__remove"
-                    onClick={() => removeUser(person.id)}
-                    aria-label={`Remove ${person.displayName}`}
-                  >
-                    <X size={14} aria-hidden="true" />
-                  </button>
-                </li>
-              ))}
+              {selected.map((person) => {
+                const isBot = resolveIsBot(person.isBot, person.displayName);
+                return (
+                  <li key={person.id}>
+                    <Monogram name={person.displayName} src={person.profilePictureUrl} size="xs" />
+                    <span className="builder__person">
+                      <span className="builder__person-name">{person.displayName}</span>
+                      {isBot && <BotBadge />}
+                    </span>
+                    <button
+                      type="button"
+                      className="builder__remove"
+                      onClick={() => removeUser(person.id)}
+                      aria-label={`Remove ${person.displayName}`}
+                    >
+                      <X size={14} aria-hidden="true" />
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           )}
 
@@ -326,7 +384,9 @@ export function NewConversationPage() {
           <p className="builder__hint">
             {mode === 'direct'
               ? selected.length === 1
-                ? `Open a thread with ${selected[0].displayName}.`
+                ? directIsBot
+                  ? `Open a direct thread with ${selected[0].displayName}, an AI teammate.`
+                  : `Open a thread with ${selected[0].displayName}.`
                 : 'One person is enough for a direct thread.'
               : selected.length < 2
                 ? 'A group needs at least two other people.'

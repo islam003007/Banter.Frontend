@@ -309,6 +309,31 @@ svg {
   background: var(--rule-dark, #a89b84);
 }
 
+/* AI badge */
+
+.bot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 16px;
+  flex: none;
+  padding: 0 4px 0 3px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
+  background: var(--paper-bright);
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  vertical-align: middle;
+}
+
+.bot-badge svg {
+  color: var(--lime-deep);
+}
+
 /* Buttons */
 
 .button {

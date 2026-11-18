@@ -27,12 +27,14 @@ import {
   WifiOff,
 } from 'lucide-react';
 import { api, errorMessage, ApiError } from '../lib/api';
+import { resolveIsBot } from '../lib/bots';
 import { formatClock, formatDayLabel, formatLongDate, parseDate } from '../lib/format';
 import { queryKeys } from '../lib/queryKeys';
 import type { ChatMessage, InboxPage, MessagesPage } from '../lib/types';
 import { useAuth } from '../auth/AuthProvider';
 import { useRealtime } from '../realtime/RealtimeProvider';
 import { useRail } from '../layouts/RailContext';
+import { BotBadge } from '../components/BotBadge';
 import { Monogram, PresenceDot } from '../components/Monogram';
 import { ConnectionStatus } from '../components/ConnectionStatus';
 import { DetailsDrawer } from '../components/DetailsDrawer';
@@ -116,7 +118,7 @@ function ChatSkeleton() {
 export function ChatPage() {
   const { conversationId = '' } = useParams<{ conversationId: string }>();
   const { user } = useAuth();
-  const { state: realtimeState, retry: retryRealtime } = useRealtime();
+  const { state: realtimeState, retry: retryRealtime, botTyping } = useRealtime();
   const { drawerOpen, openDrawer } = useRail();
   const queryClient = useQueryClient();
 
@@ -177,7 +179,15 @@ export function ChatPage() {
       'Conversation';
   const online = otherParticipant?.isOnline ?? fallback?.isOnline ?? false;
   const participants = detail.data?.participants ?? [];
-  const onlineCount = participants.filter((participant) => participant.isOnline).length;
+  const onlineCount = participants.filter(
+    (participant) =>
+      !resolveIsBot(participant.isBot, participant.displayName) && participant.isOnline,
+  ).length;
+  const otherIsBot = otherParticipant
+    ? resolveIsBot(otherParticipant.isBot, otherParticipant.displayName)
+    : resolveIsBot(detail.data?.isBot ?? fallback?.isBot, title);
+  const isBotConversation = !isGroup && otherIsBot;
+  const typingBot = botTyping[conversationId] ?? null;
 
   const messages = useMemo(
     () => flattenMessages(messagesQuery.data?.pages),
@@ -273,6 +283,7 @@ export function ChatPage() {
         userId: user?.id ?? '',
         displayName: user?.displayName ?? 'You',
         profilePictureUrl: user?.profilePictureUrl ?? null,
+        isBot: false,
       };
 
       queryClient.setQueryData<InfiniteData<MessagesPage, string | null>>(
@@ -522,6 +533,13 @@ export function ChatPage() {
                     </>
                   )}
                 </>
+              ) : isBotConversation ? (
+                <>
+                  <BotBadge />
+                  <span>AI teammate</span>
+                  <span className="chat__dot" aria-hidden="true" />
+                  <span>direct thread</span>
+                </>
               ) : (
                 <>
                   <PresenceDot online={online} label={online ? 'Online' : 'Offline'} />
@@ -610,6 +628,19 @@ export function ChatPage() {
       )}
 
       <div className="chat__composer-wrap">
+        {typingBot && (
+          <div className="bot-thinking" role="status">
+            <span className="bot-thinking__signal" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+            <span>
+              <strong>{typingBot}</strong> is thinking…
+            </span>
+          </div>
+        )}
+
         {realtimeState === 'disconnected' && (
           <div className="realtime-banner" role="status">
             <WifiOff size={15} aria-hidden="true" />
@@ -693,6 +724,7 @@ function MessageRow({
 }) {
   const pending = message.id.startsWith('pending-');
   const time = formatClock(message.createdAt);
+  const isBot = resolveIsBot(message.isBot, message.displayName);
 
   if (mine) {
     return (
@@ -711,7 +743,7 @@ function MessageRow({
   return (
     <article
       className={`message message--theirs ${continuation ? 'is-continuation' : ''}`.trim()}
-      aria-label={`${message.displayName} at ${time}`}
+      aria-label={`${message.displayName}${isBot ? ', AI teammate' : ''} at ${time}`}
     >
       <div className="message__avatar">
         {!continuation && (
@@ -722,6 +754,7 @@ function MessageRow({
         {!continuation && (
           <header className="message__meta">
             <span className="message__name">{message.displayName}</span>
+            {isBot && <BotBadge />}
             <time dateTime={message.createdAt} title={formatLongDate(message.createdAt)}>
               {time}
             </time>

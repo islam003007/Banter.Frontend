@@ -67,6 +67,13 @@ function boolean(value: unknown): boolean {
   return value === true;
 }
 
+function optionalBoolean(value: unknown): boolean | undefined {
+  if (typeof value === 'boolean') return value;
+  if (value === 1 || value === 'true') return true;
+  if (value === 0 || value === 'false') return false;
+  return undefined;
+}
+
 function list(value: unknown): unknown[] {
   return Array.isArray(value) ? value : [];
 }
@@ -180,6 +187,7 @@ function normalizeInboxConversation(value: unknown): InboxConversation {
     lastMessageCreatedAt: text(source.lastMessageCreatedAt) ?? text(lastMessage.createdAt),
     isGroup: boolean(source.isGroup),
     isOnline: boolean(source.isOnline),
+    isBot: optionalBoolean(source.isBot ?? source.isBotConversation ?? source.participantIsBot),
     unreadCount: number(source.unreadCount) ?? number(source.unread) ?? 0,
   };
 }
@@ -191,6 +199,7 @@ function normalizeParticipant(value: unknown): ConversationParticipant {
     displayName: text(source.displayName) ?? text(source.name) ?? 'Participant',
     profilePictureUrl: text(source.profilePictureUrl) ?? text(source.profilePicture) ?? null,
     isOnline: boolean(source.isOnline ?? source.online),
+    isBot: optionalBoolean(source.isBot ?? source.isBotUser ?? source.bot),
   };
 }
 
@@ -203,6 +212,7 @@ function normalizeChatMessage(value: unknown): ChatMessage {
     userId: text(source.userId) ?? text(source.senderId) ?? '',
     displayName: text(source.displayName) ?? text(source.senderDisplayName) ?? 'Unknown',
     profilePictureUrl: text(source.profilePictureUrl) ?? text(source.senderProfilePictureUrl) ?? null,
+    isBot: optionalBoolean(source.isBot ?? source.senderIsBot ?? source.isBotMessage),
   };
 }
 
@@ -214,6 +224,14 @@ function normalizeSearchUser(value: unknown): UserSearchResult {
     email: text(source.email) ?? '',
     profilePictureUrl: text(source.profilePictureUrl) ?? text(source.profilePicture) ?? null,
     isOnline: boolean(source.isOnline ?? source.online),
+    isBot: optionalBoolean(source.isBot ?? source.isBotUser ?? source.bot),
+    botPersona:
+      text(source.botPersona) ??
+      text(source.persona) ??
+      text(source.botRole) ??
+      text(source.role) ??
+      text(source.botDescription) ??
+      text(source.tagline),
   };
 }
 
@@ -260,6 +278,7 @@ function normalizeDetail(value: unknown, conversationId: string): ConversationDe
     title: text(source.title),
     displayName: text(source.displayName) ?? text(source.title) ?? 'Conversation',
     isGroup: boolean(source.isGroup),
+    isBot: optionalBoolean(source.isBot ?? source.isBotConversation),
     participants: list(rawParticipants).map(normalizeParticipant),
   };
 }

@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, LogOut, PanelRightClose, Users } from 'lucide-react';
 import { api, errorMessage } from '../lib/api';
+import { resolveIsBot } from '../lib/bots';
 import { queryKeys } from '../lib/queryKeys';
 import type { ConversationDetail } from '../lib/types';
 import { useAuth } from '../auth/AuthProvider';
+import { BotBadge } from './BotBadge';
 import { Monogram, PresenceDot } from './Monogram';
 
 interface DetailsDrawerProps {
@@ -44,7 +46,12 @@ export function DetailsDrawer({
   const participants = detail?.participants ?? [];
   const otherParticipant = participants.find((participant) => participant.userId !== user?.id);
   const displayName = !isGroup && otherParticipant ? otherParticipant.displayName : name;
-  const onlineCount = participants.filter((participant) => participant.isOnline).length;
+  const isBotConversation =
+    !isGroup && resolveIsBot(otherParticipant?.isBot ?? detail?.isBot, displayName);
+  const onlineCount = participants.filter(
+    (participant) =>
+      !resolveIsBot(participant.isBot, participant.displayName) && participant.isOnline,
+  ).length;
 
   const leave = useMutation({
     mutationFn: () => api.leaveConversation(conversationId),
@@ -130,7 +137,11 @@ export function DetailsDrawer({
             <div>
               <h2 id="details-title">{displayName}</h2>
               <p className="mono">
-                {isGroup ? 'group thread' : 'direct thread'}
+                {isGroup
+                  ? 'group thread'
+                  : isBotConversation
+                    ? 'AI direct thread'
+                    : 'direct thread'}
                 {detail && ` · ${participants.length} ${participants.length === 1 ? 'person' : 'people'}`}
               </p>
             </div>
@@ -164,28 +175,41 @@ export function DetailsDrawer({
 
             {participants.length > 0 && (
               <ul className="participant-list">
-                {participants.map((participant) => (
-                  <li key={participant.userId} className="participant">
-                    <span className="participant__avatar">
-                      <Monogram
-                        name={participant.displayName}
-                        src={participant.profilePictureUrl}
-                        size="sm"
-                      />
-                      <PresenceDot
-                        online={participant.isOnline}
-                        label={`${participant.displayName} is ${participant.isOnline ? 'online' : 'offline'}`}
-                      />
-                    </span>
-                    <span className="participant__name">
-                      {participant.displayName}
-                      {participant.userId === user?.id && <span className="participant__you mono">you</span>}
-                    </span>
-                    <span className="participant__state mono">
-                      {participant.isOnline ? 'online' : 'away'}
-                    </span>
-                  </li>
-                ))}
+                {participants.map((participant) => {
+                  const participantIsBot = resolveIsBot(
+                    participant.isBot,
+                    participant.displayName,
+                  );
+                  return (
+                    <li key={participant.userId} className="participant">
+                      <span className="participant__avatar">
+                        <Monogram
+                          name={participant.displayName}
+                          src={participant.profilePictureUrl}
+                          size="sm"
+                        />
+                        {!participantIsBot && (
+                          <PresenceDot
+                            online={participant.isOnline}
+                            label={`${participant.displayName} is ${participant.isOnline ? 'online' : 'offline'}`}
+                          />
+                        )}
+                      </span>
+                      <span className="participant__name">
+                        {participant.displayName}
+                        {participantIsBot && <BotBadge />}
+                        {participant.userId === user?.id && <span className="participant__you mono">you</span>}
+                      </span>
+                      <span className="participant__state mono">
+                        {participantIsBot
+                          ? 'AI'
+                          : participant.isOnline
+                            ? 'online'
+                            : 'away'}
+                      </span>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </section>
@@ -197,7 +221,13 @@ export function DetailsDrawer({
             <dl className="details-facts">
               <div>
                 <dt className="mono">type</dt>
-                <dd>{isGroup ? 'group conversation' : 'direct message'}</dd>
+                <dd>
+                  {isGroup
+                    ? 'group conversation'
+                    : isBotConversation
+                      ? 'AI direct message'
+                      : 'direct message'}
+                </dd>
               </div>
               <div>
                 <dt className="mono">realtime</dt>

@@ -2,11 +2,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { MessageSquarePlus, X } from 'lucide-react';
 import { api, errorMessage } from '../lib/api';
+import { resolveIsBot } from '../lib/bots';
 import { queryKeys } from '../lib/queryKeys';
 import { formatThreadTime } from '../lib/format';
 import type { InboxConversation } from '../lib/types';
 import { useAuth } from '../auth/AuthProvider';
 import { useRail } from '../layouts/RailContext';
+import { BotBadge } from './BotBadge';
 import { Monogram, PresenceDot } from './Monogram';
 import { ConnectionStatus } from './ConnectionStatus';
 import { LoadingRows } from './PageState';
@@ -33,6 +35,7 @@ function ConversationRow({
 }) {
   const unread = active ? 0 : conversation.unreadCount;
   const hasMessage = Boolean(conversation.lastMessageContent);
+  const isBot = !conversation.isGroup && resolveIsBot(conversation.isBot, conversation.displayName);
 
   return (
     <Link
@@ -40,9 +43,9 @@ function ConversationRow({
       className={`conversation ${active ? 'is-active' : ''} ${unread > 0 ? 'has-unread' : ''}`.trim()}
       onClick={onNavigate}
       aria-current={active ? 'page' : undefined}
-      aria-label={`${conversation.displayName}${unread > 0 ? `, ${unread} unread` : ''}${
-        conversation.isOnline ? ', online' : ''
-      }`}
+      aria-label={`${conversation.displayName}${isBot ? ', AI teammate' : ''}${
+        unread > 0 ? `, ${unread} unread` : ''
+      }${!isBot && conversation.isOnline ? ', online' : ''}`}
     >
       <span className="conversation__avatar">
         <Monogram
@@ -51,13 +54,16 @@ function ConversationRow({
           group={conversation.isGroup}
           size="md"
         />
-        {!conversation.isGroup && (
+        {!conversation.isGroup && !isBot && (
           <PresenceDot online={conversation.isOnline} label={`${conversation.displayName} is ${conversation.isOnline ? 'online' : 'offline'}`} />
         )}
       </span>
       <span className="conversation__body">
         <span className="conversation__top">
-          <span className="conversation__name">{conversation.displayName}</span>
+          <span className="conversation__name-row">
+            <span className="conversation__name">{conversation.displayName}</span>
+            {isBot && <BotBadge />}
+          </span>
           <time className="conversation__time" dateTime={conversation.lastMessageCreatedAt ?? undefined}>
             {formatThreadTime(conversation.lastMessageCreatedAt)}
           </time>

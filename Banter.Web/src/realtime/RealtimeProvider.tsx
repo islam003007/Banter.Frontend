@@ -14,6 +14,7 @@ import { HubConnectionBuilder, HubConnectionState, LogLevel } from '@microsoft/s
 import { queryKeys } from '../lib/queryKeys';
 import { useAuth } from '../auth/AuthProvider';
 import type {
+  BotTypingNotification,
   ChatMessage,
   InboxPage,
   MessageNotification,
@@ -21,9 +22,12 @@ import type {
   RealtimeState,
 } from '../lib/types';
 
+const BOT_TYPING_TIMEOUT_MS = 12_000;
+
 interface RealtimeContextValue {
   state: RealtimeState;
   retry: () => void;
+  botTyping: Record<string, string>;
 }
 
 const RealtimeContext = createContext<RealtimeContextValue | null>(null);
@@ -46,6 +50,7 @@ function toChatMessage(notification: MessageNotification): ChatMessage {
     userId: notification.userId,
     displayName: notification.displayName,
     profilePictureUrl: notification.profilePictureUrl,
+    isBot: notification.isBot,
   };
 }
 
@@ -60,6 +65,7 @@ function normalizeNotification(value: unknown): MessageNotification | null {
     source.senderDisplayName ?? source.senderName ?? source.displayName ?? source.userName;
   const profile =
     source.senderProfilePictureUrl ?? source.profilePictureUrl ?? source.senderProfilePicture;
+  const isBot = source.isBot ?? source.senderIsBot ?? source.isBotMessage;
 
   return {
     id,
@@ -68,8 +74,41 @@ function normalizeNotification(value: unknown): MessageNotification | null {
     userId: typeof source.userId === 'string' ? source.userId : '',
     displayName: typeof sender === 'string' ? sender : 'New message',
     profilePictureUrl: typeof profile === 'string' ? profile : null,
+    isBot: typeof isBot === 'boolean' ? isBot : undefined,
     createdAt: typeof source.createdAt === 'string' ? source.createdAt : new Date().toISOString(),
   };
+}
+
+interface BotTypingSignal extends BotTypingNotification {
+  active: boolean;
+}
+
+function normalizeBotTyping(value: unknown, botNameArgument?: unknown): BotTypingSignal | null {
+  if (typeof value === 'string') {
+    const botName =
+      typeof botNameArgument === 'string' && botNameArgument.trim()
+        ? botNameArgument.trim()
+        : 'AI teammate';
+    return { conversationId: value, botName, active: true };
+  }
+
+  if (!value || typeof value !== 'object') return null;
+  const source = value as Record<string, unknown>;
+  const conversationId =
+    typeof source.conversationId === 'string' ? source.conversationId : null;
+  if (!conversationId) return null;
+
+  const candidate =
+    source.botName ??
+    source.botDisplayName ??
+    source.displayName ??
+    source.senderDisplayName ??
+    source.name;
+  const botName =
+    typeof candidate === 'string' && candidate.trim() ? candidate.trim() : 'AI teammate';
+  const active = source.isTyping ?? source.typing ?? source.active;
+
+  return { conversationId, botName, active: active !== false };
 }
 
 export function RealtimeProvider({ children }: { children: ReactNode }) {
@@ -77,7 +116,9 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const location = useLocation();
   const activeConversationRef = useRef<string | null>(conversationIdFromPath(location.pathname));
+  const typingTimersRef = useRef(new Map<string, number>());
   const [state, setState] = useState<RealtimeState>('connecting');
+  const [botTyping, setBotTyping] = useState<Record<string, string>>({});
   const [retryNonce, setRetryNonce] = useState(0);
 
   useEffect(() => {
@@ -86,6 +127,48 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
 
   const retry = useCallback(() => {
     setRetryNonce((value) => value + 1);
+  }, []);
+
+  const clearBotTyping = useCallback((conversationId: string) => {
+    const timer = typingTimersRef.current.get(conversationId);
+    if (timer !== undefined) window.clearTimeout(timer);
+    typingTimersRef.current.delete(conversationId);
+    setBotTyping((current) => {
+      if (!(conversationId in current)) return current;
+      const next = { ...current };
+      delete next[conversationId];
+      return next;
+    });
+  }, []);
+
+  const clearAllBotTyping = useCallback(() => {
+    for (const timer of typingTimersRef.current.values()) {
+      window.clearTimeout(timer);
+    }
+    typingTimersRef.current.clear();
+    setBotTyping((current) => (Object.keys(current).length === 0 ? current : {}));
+  }, []);
+
+  const showBotTyping = useCallback((conversationId: string, botName: string) => {
+    const existing = typingTimersRef.current.get(conversationId);
+    if (existing !== undefined) window.clearTimeout(existing);
+
+    setBotTyping((current) =>
+      current[conversationId] === botName
+        ? current
+        : { ...current, [conversationId]: botName },
+    );
+
+    const timer = window.setTimeout(() => {
+      typingTimersRef.current.delete(conversationId);
+      setBotTyping((current) => {
+        if (!(conversationId in current)) return current;
+        const next = { ...current };
+        delete next[conversationId];
+        return next;
+      });
+    }, BOT_TYPING_TIMEOUT_MS);
+    typingTimersRef.current.set(conversationId, timer);
   }, []);
 
   useEffect(() => {
@@ -110,6 +193,7 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       const notification = normalizeNotification(payload);
       if (!notification) return;
 
+      clearBotTyping(notification.conversationId);
       const isActive = activeConversationRef.current === notification.conversationId;
 
       const messagesKey = queryKeys.messages(notification.conversationId);
@@ -179,6 +263,16 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
       }
     };
 
+    const onBotTyping = (payload: unknown, botName?: unknown) => {
+      const signal = normalizeBotTyping(payload, botName);
+      if (!signal) return;
+      if (!signal.active) {
+        clearBotTyping(signal.conversationId);
+        return;
+      }
+      showBotTyping(signal.conversationId, signal.botName);
+    };
+
     const beginHeartbeat = () => {
       if (heartbeat) window.clearInterval(heartbeat);
       heartbeat = window.setInterval(() => {
@@ -191,13 +285,17 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
     };
 
     connection.on('ReceiveMessage', onMessage);
+    connection.on('ReceiveBotTyping', onBotTyping);
 
     connection.onreconnecting(() => {
-      if (!disposed) setState('reconnecting');
+      if (disposed) return;
+      clearAllBotTyping();
+      setState('reconnecting');
     });
 
     connection.onreconnected(() => {
       if (disposed) return;
+      clearAllBotTyping();
       setState('connected');
       void queryClient.invalidateQueries({ queryKey: queryKeys.inbox });
       const activeId = activeConversationRef.current;
@@ -207,7 +305,9 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
     });
 
     connection.onclose(() => {
-      if (!disposed) setState('disconnected');
+      if (disposed) return;
+      clearAllBotTyping();
+      setState('disconnected');
     });
 
     const start = async (attempt = 0) => {
@@ -235,13 +335,18 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
     return () => {
       disposed = true;
       connection.off('ReceiveMessage', onMessage);
+      connection.off('ReceiveBotTyping', onBotTyping);
+      clearAllBotTyping();
       if (heartbeat) window.clearInterval(heartbeat);
       if (retryTimer) window.clearTimeout(retryTimer);
       void connection.stop();
     };
-  }, [user, queryClient, retryNonce]);
+  }, [user, queryClient, retryNonce, clearAllBotTyping, clearBotTyping, showBotTyping]);
 
-  const value = useMemo<RealtimeContextValue>(() => ({ state, retry }), [state, retry]);
+  const value = useMemo<RealtimeContextValue>(
+    () => ({ state, retry, botTyping }),
+    [state, retry, botTyping],
+  );
 
   return <RealtimeContext.Provider value={value}>{children}</RealtimeContext.Provider>;
 }

@@ -20,6 +20,7 @@ export interface InboxConversation {
   lastMessageCreatedAt: string | null;
   isGroup: boolean;
   isOnline: boolean;
+  isBot?: boolean;
   unreadCount: number;
 }
 
@@ -34,6 +35,7 @@ export interface ConversationParticipant {
   displayName: string;
   profilePictureUrl: string | null;
   isOnline: boolean;
+  isBot?: boolean;
 }
 
 export interface ConversationDetail {
@@ -41,6 +43,7 @@ export interface ConversationDetail {
   title: string | null;
   displayName: string;
   isGroup: boolean;
+  isBot?: boolean;
   participants: ConversationParticipant[];
 }
 
@@ -51,6 +54,7 @@ export interface ChatMessage {
   userId: string;
   displayName: string;
   profilePictureUrl: string | null;
+  isBot?: boolean;
 }
 
 export interface MessagesPage {
@@ -66,6 +70,8 @@ export interface UserSearchResult {
   email: string;
   profilePictureUrl: string | null;
   isOnline: boolean;
+  isBot?: boolean;
+  botPersona?: string | null;
 }
 
 export interface UserSearchPage {
@@ -76,6 +82,11 @@ export interface UserSearchPage {
 
 export interface MessageNotification extends ChatMessage {
   conversationId: string;
+}
+
+export interface BotTypingNotification {
+  conversationId: string;
+  botName: string;
 }
 
 export type RealtimeState = 'connecting' | 'connected' | 'reconnecting' | 'disconnected';
