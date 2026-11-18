@@ -8,11 +8,13 @@ import { formatThreadTime } from '../lib/format';
 import type { InboxConversation } from '../lib/types';
 import { useAuth } from '../auth/AuthProvider';
 import { useRail } from '../layouts/RailContext';
+import { useRealtime } from '../realtime/RealtimeProvider';
 import { BotBadge } from './BotBadge';
 import { Monogram, PresenceDot } from './Monogram';
 import { ConnectionStatus } from './ConnectionStatus';
 import { LoadingRows } from './PageState';
 import { PrivateWindowNote } from './PrivateWindowNote';
+import { SignalMeter } from './SignalMeter';
 import { Wordmark } from './Wordmark';
 
 function activeConversationId(pathname: string): string | null {
@@ -27,10 +29,12 @@ function activeConversationId(pathname: string): string | null {
 
 function ConversationRow({
   conversation,
+  index,
   active,
   onNavigate,
 }: {
   conversation: InboxConversation;
+  index: number;
   active: boolean;
   onNavigate: () => void;
 }) {
@@ -41,13 +45,20 @@ function ConversationRow({
   return (
     <Link
       to={`/c/${conversation.conversationId}`}
-      className={`conversation ${active ? 'is-active' : ''} ${unread > 0 ? 'has-unread' : ''}`.trim()}
+      className={`conversation ${active ? 'is-active' : ''} ${
+        unread > 0 ? 'has-unread' : ''
+      } ${conversation.isGroup ? 'is-group' : ''} ${isBot ? 'is-bot' : ''}`.trim()}
       onClick={onNavigate}
       aria-current={active ? 'page' : undefined}
-      aria-label={`${conversation.displayName}${isBot ? ', AI teammate' : ''}${
-        unread > 0 ? `, ${unread} unread` : ''
-      }${!isBot && conversation.isOnline ? ', online' : ''}`}
+      aria-label={`${conversation.displayName}${conversation.isGroup ? ', group channel' : ''}${
+        isBot ? ', AI teammate' : ''
+      }${unread > 0 ? `, ${unread} unread` : ''}${
+        !isBot && conversation.isOnline ? ', online' : ''
+      }`}
     >
+      <span className="conversation__index mono" aria-hidden="true">
+        {String(index + 1).padStart(2, '0')}
+      </span>
       <span className="conversation__avatar">
         <Monogram
           name={conversation.displayName}
@@ -60,6 +71,13 @@ function ConversationRow({
             online={conversation.isOnline}
             label={`${conversation.displayName} is ${conversation.isOnline ? 'online' : 'offline'}`}
           />
+        )}
+        {isBot && (
+          <span className="conversation__bot-mark" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </span>
         )}
       </span>
       <span className="conversation__body">
@@ -79,12 +97,21 @@ function ConversationRow({
         </span>
         <span className="conversation__bottom">
           <span className={`conversation__snippet ${hasMessage ? '' : 'is-quiet'}`.trim()}>
-            {hasMessage ? conversation.lastMessageContent : 'No messages yet'}
+            {hasMessage ? conversation.lastMessageContent : 'No transmissions yet'}
           </span>
-          {unread > 0 && (
+          {unread > 0 ? (
             <span className="unread-count" aria-label={`${unread} unread`}>
               {unread > 99 ? '99+' : unread}
             </span>
+          ) : (
+            active && (
+              <span className="conversation__wave" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+              </span>
+            )
           )}
         </span>
       </span>
@@ -96,6 +123,7 @@ export function ConversationRail() {
   const { user } = useAuth();
   const location = useLocation();
   const { drawerOpen, closeDrawer } = useRail();
+  const { state: realtimeState } = useRealtime();
   const currentId = activeConversationId(location.pathname);
   const inbox = useQuery({
     queryKey: queryKeys.inbox,
@@ -110,7 +138,7 @@ export function ConversationRail() {
     <aside
       className="rail"
       id="conversation-rail"
-      aria-label="Conversation rail"
+      aria-label="Channel rail"
       role={drawerOpen ? 'dialog' : undefined}
       aria-modal={drawerOpen ? true : undefined}
     >
@@ -128,12 +156,16 @@ export function ConversationRail() {
             <X size={20} aria-hidden="true" />
           </button>
         </div>
-        <div className="rail__meta">
-          <span className="mono rail__tagline">
-            <span className="rail__tagline-signal" aria-hidden="true" />
-            night signal
+
+        <div className="rail__desk">
+          <span className="rail__desk-name">
+            <span className={`rail__desk-pip is-${realtimeState}`} aria-hidden="true" />
+            Night desk
           </span>
-          <ConnectionStatus />
+          <span className="rail__desk-meter">
+            <SignalMeter state={realtimeState} bars={5} />
+            <ConnectionStatus compact />
+          </span>
         </div>
       </header>
 
@@ -150,7 +182,12 @@ export function ConversationRail() {
       </div>
 
       <div className="rail__heading">
-        <h2>Conversations</h2>
+        <h2 className="mono">Channel index</h2>
+        <span className="rail__heading-mark" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
         <span className="mono rail__count" role="status" aria-live="polite">
           {inbox.isSuccess && conversations.length > 0
             ? totalUnread > 0
@@ -175,7 +212,7 @@ export function ConversationRail() {
 
         {inbox.isSuccess && conversations.length === 0 && (
           <div className="rail__empty">
-            <p className="mono">no signals yet</p>
+            <p className="mono">no channels yet</p>
             <h3>Start the first thread.</h3>
             <p>Search for a person and open a direct message, or gather a few people into a group.</p>
             <Link to="/new" className="button button--primary button--small" onClick={closeDrawer}>
@@ -185,11 +222,12 @@ export function ConversationRail() {
         )}
 
         {conversations.length > 0 && (
-          <nav className="conversation-list" aria-label="Conversations">
-            {conversations.map((conversation) => (
+          <nav className="conversation-list" aria-label="Channels">
+            {conversations.map((conversation, index) => (
               <ConversationRow
                 key={conversation.conversationId}
                 conversation={conversation}
+                index={index}
                 active={conversation.conversationId === currentId}
                 onNavigate={closeDrawer}
               />
@@ -201,10 +239,18 @@ export function ConversationRail() {
       <footer className="rail__footer">
         {user && (
           <Link to="/me" className="rail__account" onClick={closeDrawer} aria-label="Your session">
-            <Monogram name={user.displayName} src={user.profilePictureUrl} size="xs" />
+            <span className="rail__account-avatar">
+              <Monogram name={user.displayName} src={user.profilePictureUrl} size="xs" />
+              <PresenceDot online label="You are online" />
+            </span>
             <span className="rail__account-text">
               <span className="rail__account-name">{user.displayName}</span>
-              <span className="mono">your seat</span>
+              <span className="mono">operator seat</span>
+            </span>
+            <span className="rail__account-signal" aria-hidden="true">
+              <span />
+              <span />
+              <span />
             </span>
           </Link>
         )}

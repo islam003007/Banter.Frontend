@@ -119,7 +119,7 @@ export function DetailsDrawer({
         ref={dialogRef}
       >
         <header className="details-drawer__header">
-          <span className="mono">thread details</span>
+          <span className="mono">channel details</span>
           <button
             type="button"
             className="icon-button"
@@ -138,10 +138,10 @@ export function DetailsDrawer({
               <h2 id="details-title">{displayName}</h2>
               <p className="mono">
                 {isGroup
-                  ? 'group thread'
+                  ? 'group channel'
                   : isBotConversation
-                    ? 'AI direct thread'
-                    : 'direct thread'}
+                    ? 'AI operator channel'
+                    : 'direct channel'}
                 {detail && ` · ${participants.length} ${participants.length === 1 ? 'person' : 'people'}`}
               </p>
             </div>
@@ -216,17 +216,17 @@ export function DetailsDrawer({
 
           <section className="details-section details-section--thread" aria-labelledby="thread-heading">
             <div className="details-section__header">
-              <h3 id="thread-heading">Thread</h3>
+              <h3 id="thread-heading">Channel</h3>
             </div>
             <dl className="details-facts">
               <div>
                 <dt className="mono">type</dt>
                 <dd>
                   {isGroup
-                    ? 'group conversation'
+                    ? 'group channel'
                     : isBotConversation
-                      ? 'AI direct message'
-                      : 'direct message'}
+                      ? 'AI operator channel'
+                      : 'direct channel'}
                 </dd>
               </div>
               <div>
@@ -242,11 +242,11 @@ export function DetailsDrawer({
 
           <section className="details-section details-section--leave" aria-labelledby="leave-heading">
             <div className="details-section__header">
-              <h3 id="leave-heading">Leave thread</h3>
+              <h3 id="leave-heading">Leave channel</h3>
             </div>
             {!isGroup && (
               <p className="details-muted">
-                Direct threads are shared by both people. Leave is only available for group threads.
+                Direct channels are shared by both people. Leave is only available for group channels.
               </p>
             )}
             {isGroup && (
@@ -264,7 +264,7 @@ export function DetailsDrawer({
                   <div className="leave-confirm">
                     <p>
                       <AlertTriangle size={16} aria-hidden="true" />
-                      Leave “{displayName}”? The thread disappears from your inbox.
+                      Leave “{displayName}”? The channel disappears from your inbox.
                     </p>
                     <div className="leave-confirm__actions">
                       <button

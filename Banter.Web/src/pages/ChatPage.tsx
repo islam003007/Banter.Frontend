@@ -36,7 +36,8 @@ import { useRealtime } from '../realtime/RealtimeProvider';
 import { useRail } from '../layouts/RailContext';
 import { BotBadge } from '../components/BotBadge';
 import { Monogram, PresenceDot } from '../components/Monogram';
-import { ConnectionStatus } from '../components/ConnectionStatus';
+import { SignalMeter } from '../components/SignalMeter';
+import { TransmissionBand } from '../components/TransmissionBand';
 import { DetailsDrawer } from '../components/DetailsDrawer';
 import { ErrorState } from '../components/PageState';
 
@@ -101,6 +102,15 @@ function updateInboxAfterSend(
 function ChatSkeleton() {
   return (
     <div className="chat-skeleton" role="status" aria-label="Loading messages">
+      <div className="chat-skeleton__status mono">
+        <span className="chat-skeleton__signal" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
+        </span>
+        opening channel
+      </div>
       {Array.from({ length: 6 }).map((_, index) => (
         <div className={`chat-skeleton__row ${index % 3 === 2 ? 'is-own' : ''}`.trim()} key={index}>
           <span className="chat-skeleton__avatar" />
@@ -188,6 +198,31 @@ export function ChatPage() {
     : resolveIsBot(detail.data?.isBot ?? fallback?.isBot, title);
   const isBotConversation = !isGroup && otherIsBot;
   const typingBot = botTyping[conversationId] ?? null;
+
+  const channelIndex = useMemo(() => {
+    const index = inbox.data?.conversations.findIndex(
+      (conversation) => conversation.conversationId === conversationId,
+    );
+    return index !== undefined && index >= 0 ? String(index + 1).padStart(2, '0') : null;
+  }, [inbox.data, conversationId]);
+
+  const channelKind = isGroup
+    ? 'group channel'
+    : isBotConversation
+      ? 'AI operator'
+      : 'direct channel';
+
+  const channelDetail = typingBot
+    ? `${typingBot} is typing…`
+    : isGroup
+      ? participants.length > 0
+        ? `${participants.length} in channel${onlineCount > 0 ? ` · ${onlineCount} online` : ''}`
+        : 'group channel'
+      : isBotConversation
+        ? 'AI operator · direct wire'
+        : online
+          ? 'direct wire · online'
+          : 'direct wire · away';
 
   const messages = useMemo(
     () => flattenMessages(messagesQuery.data?.pages),
@@ -484,53 +519,40 @@ export function ChatPage() {
       <div className="sr-only" role="status" aria-live="polite">
         {liveAnnouncement}
       </div>
-      <header className="chat__header">
-        <div className="chat__topline">
-          <div className="chat__topline-left">
-            <button
-              type="button"
-              className="icon-button chat__rail-toggle"
-              onClick={openDrawer}
-              aria-label="Open conversations"
-              aria-expanded={drawerOpen}
-              aria-controls="conversation-rail"
-            >
-              <PanelLeft size={20} aria-hidden="true" />
-            </button>
-            <span className="mono chat__eyebrow">live thread</span>
-            <ConnectionStatus compact />
-          </div>
-          <button
-            type="button"
-            className="details-button"
-            onClick={() => setDetailsOpen(true)}
-            aria-haspopup="dialog"
-            aria-expanded={detailsOpen}
-            aria-label="Thread details"
-          >
-            <span>Details</span>
-            <Info size={17} aria-hidden="true" />
-          </button>
-        </div>
+      <TransmissionBand
+        context={channelIndex ? `channel ${channelIndex}` : 'channel'}
+        detail={channelDetail}
+        attention={Boolean(typingBot)}
+      />
 
-        <div className="chat__title-row">
+      <header className="chat__header">
+        <button
+          type="button"
+          className="icon-button chat__rail-toggle"
+          onClick={openDrawer}
+          aria-label="Open conversations"
+          aria-expanded={drawerOpen}
+          aria-controls="conversation-rail"
+        >
+          <PanelLeft size={20} aria-hidden="true" />
+        </button>
+
+        <div className="chat__identity">
           <Monogram name={title} group={isGroup} size="lg" className="chat__title-monogram" />
-          <div className="chat__title-copy">
+          <div className="chat__identity-copy">
+            <p className="chat__channel-label mono">
+              {channelIndex && <span className="chat__channel-code">CH {channelIndex}</span>}
+              <span>{channelKind}</span>
+            </p>
             <h1 id="chat-title">{title || 'Conversation'}</h1>
             <p className="chat__subtitle mono">
               {isGroup ? (
                 <>
-                  <span>group thread</span>
-                  {participants.length > 0 && (
-                    <>
-                      <span className="chat__dot" aria-hidden="true" />
-                      <span>{participants.length} people</span>
-                    </>
-                  )}
+                  <span>{participants.length > 0 ? `${participants.length} people` : 'group channel'}</span>
                   {onlineCount > 0 && (
                     <>
                       <span className="chat__dot" aria-hidden="true" />
-                      <span>{onlineCount} online</span>
+                      <span>{onlineCount} online now</span>
                     </>
                   )}
                 </>
@@ -539,18 +561,51 @@ export function ChatPage() {
                   <BotBadge />
                   <span>AI teammate</span>
                   <span className="chat__dot" aria-hidden="true" />
-                  <span>direct thread</span>
+                  <span>direct wire</span>
                 </>
               ) : (
                 <>
                   <PresenceDot online={online} label={online ? 'Online' : 'Offline'} />
-                  <span>{online ? 'online' : 'offline'}</span>
+                  <span>{online ? 'online' : 'away'}</span>
                   <span className="chat__dot" aria-hidden="true" />
-                  <span>direct thread</span>
+                  <span>direct wire</span>
                 </>
               )}
             </p>
           </div>
+        </div>
+
+        <div className="chat__header-actions">
+          {participants.length > 0 && (
+            <div className="chat__participants" aria-label={`${participants.length} participants`}>
+              <span className="chat__participant-stack" aria-hidden="true">
+                {participants.slice(0, 4).map((participant) => (
+                  <Monogram
+                    key={participant.userId}
+                    name={participant.displayName}
+                    src={participant.profilePictureUrl}
+                    size="xs"
+                  />
+                ))}
+                {participants.length > 4 && (
+                  <span className="chat__participant-more mono">+{participants.length - 4}</span>
+                )}
+              </span>
+              <span className="mono chat__participant-label">{participants.length} in channel</span>
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="details-button"
+            onClick={() => setDetailsOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={detailsOpen}
+            aria-label="Channel details"
+          >
+            <span>Details</span>
+            <Info size={17} aria-hidden="true" />
+          </button>
         </div>
       </header>
 
@@ -559,6 +614,7 @@ export function ChatPage() {
 
         {messagesQuery.isError && (
           <div className="chat__state">
+            <p className="chat__state-kicker mono">signal interrupted</p>
             <ErrorState
               title={isForbidden ? 'You cannot open this thread.' : 'The history did not load.'}
               message={
@@ -575,8 +631,11 @@ export function ChatPage() {
 
         {messagesQuery.isSuccess && messages.length === 0 && (
           <div className="chat__state chat__state--empty">
-            <p className="mono">quiet wire</p>
-            <h2>A thread with nothing on it yet.</h2>
+            <span className="chat__state-signal mono">
+              <SignalMeter state={realtimeState} bars={5} />
+              quiet channel
+            </span>
+            <h2>A channel with nothing on it yet.</h2>
             <p>Send the first line. It lands in the history and crosses to the other side live.</p>
           </div>
         )}
@@ -606,7 +665,14 @@ export function ChatPage() {
             {grouped.map((node) =>
               node.type === 'day' ? (
                 <div className="day-divider" key={node.key}>
-                  <span className="mono">{node.label}</span>
+                  <span className="day-divider__label mono">
+                    <span className="day-divider__bars" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                    {node.label}
+                  </span>
                 </div>
               ) : (
                 <MessageRow
@@ -637,7 +703,7 @@ export function ChatPage() {
               <span />
             </span>
             <span>
-              <strong>{typingBot}</strong> is thinking…
+              <strong>{typingBot}</strong> is typing…
             </span>
           </div>
         )}
@@ -674,8 +740,18 @@ export function ChatPage() {
               disabled={messagesQuery.isError}
             />
             <div className="composer__foot">
+              <span className="composer__mode mono" aria-hidden="true">
+                <span className="composer__wave">
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                  <span />
+                </span>
+                TX
+              </span>
               <span className="composer__hint mono" id="composer-hint">
-                enter sends · shift + enter breaks the line
+                enter transmits · shift + enter breaks the line
               </span>
               <span className={`composer__count mono ${draft.length > MESSAGE_LIMIT - 200 ? 'is-near' : ''}`.trim()}>
                 {draft.length > MESSAGE_LIMIT - 200 ? `${draft.length}/${MESSAGE_LIMIT}` : ''}
@@ -684,9 +760,9 @@ export function ChatPage() {
                 type="submit"
                 className="send-button"
                 disabled={!draft.trim() || !messagesQuery.isSuccess}
-                aria-label="Send message"
+                aria-label="Transmit message"
               >
-                <span>Send</span>
+                <span>Transmit</span>
                 <ArrowUp size={17} aria-hidden="true" />
               </button>
             </div>
@@ -731,6 +807,14 @@ function MessageRow({
     return (
       <article className={`message message--mine ${continuation ? 'is-continuation' : ''}`.trim()}>
         <div className="message__own-meta mono">
+          <span className="message__uplink">
+            <span className="message__uplink-wave" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+            uplink
+          </span>
           {pending && <span className="message__sending">sending</span>}
           <time dateTime={message.createdAt} title={formatLongDate(message.createdAt)}>
             {time}

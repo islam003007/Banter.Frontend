@@ -11,6 +11,7 @@ import { useRail } from '../layouts/RailContext';
 import { BotBadge } from '../components/BotBadge';
 import { Monogram, PresenceDot } from '../components/Monogram';
 import { PrivateWindowNote } from '../components/PrivateWindowNote';
+import { TransmissionBand } from '../components/TransmissionBand';
 
 function greeting(): string {
   const hour = new Date().getHours();
@@ -34,26 +35,29 @@ function padCount(count: number): string {
   return count > 0 ? String(count).padStart(2, '0') : '00';
 }
 
-function ThreadCard({ conversation }: { conversation: InboxConversation }) {
+function ThreadCard({ conversation, index }: { conversation: InboxConversation; index: number }) {
   const isBot = !conversation.isGroup && resolveIsBot(conversation.isBot, conversation.displayName);
   const online = !conversation.isGroup && !isBot && conversation.isOnline;
   const hasMessage = Boolean(conversation.lastMessageContent);
   const time = formatThreadTime(conversation.lastMessageCreatedAt);
+  const channel = String(index + 1).padStart(2, '0');
   const kind = conversation.isGroup
-    ? 'group thread'
+    ? 'group channel'
     : isBot
-      ? 'AI teammate'
+      ? 'AI operator'
       : online
         ? 'online now'
-        : 'direct thread';
+        : 'direct channel';
 
   return (
     <Link
       to={`/c/${conversation.conversationId}`}
-      className="welcome-thread"
-      aria-label={`${conversation.displayName}${
+      className={`welcome-thread ${conversation.isGroup ? 'welcome-thread--group' : ''} ${
+        isBot ? 'welcome-thread--bot' : ''
+      }`.trim()}
+      aria-label={`channel ${channel}, ${conversation.displayName}, ${kind}${
         conversation.unreadCount > 0 ? `, ${conversation.unreadCount} unread` : ''
-      }${online ? ', online' : ''} — open thread`}
+      }${online ? ', online' : ''} — open channel`}
     >
       <span className="welcome-thread__top">
         <span className="welcome-thread__avatar">
@@ -68,6 +72,13 @@ function ThreadCard({ conversation }: { conversation: InboxConversation }) {
               online={conversation.isOnline}
               label={`${conversation.displayName} is ${conversation.isOnline ? 'online' : 'offline'}`}
             />
+          )}
+          {isBot && (
+            <span className="welcome-thread__bot-mark" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           )}
         </span>
         <span className="welcome-thread__who">
@@ -89,11 +100,19 @@ function ThreadCard({ conversation }: { conversation: InboxConversation }) {
       <span className={`welcome-thread__snippet ${hasMessage ? '' : 'is-quiet'}`.trim()}>
         {hasMessage
           ? conversation.lastMessageContent
-          : 'No messages yet — open the thread to start it.'}
+          : 'No transmissions yet — open the channel to start it.'}
       </span>
       <span className="welcome-thread__foot mono">
-        <span>{hasMessage ? 'latest message' : 'quiet thread'}</span>
+        <span>
+          channel {channel} · {hasMessage ? 'latest transmission' : 'quiet channel'}
+        </span>
         <span className="welcome-thread__open">
+          <span className="welcome-thread__wave" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+            <span />
+          </span>
           open
           <ArrowRight size={12} aria-hidden="true" />
         </span>
@@ -148,9 +167,21 @@ export function InboxPage() {
 
   return (
     <section className="welcome" aria-labelledby="welcome-heading">
+      <TransmissionBand
+        context="night desk"
+        detail={
+          inbox.isSuccess
+            ? `${conversations.length} channels${
+                unreadTotal > 0 ? ` · ${unreadTotal} unread` : ' · all read'
+              }`
+            : 'reading the desk'
+        }
+        className="transmission--welcome"
+      />
+
       <div className="welcome__top">
         <p className="welcome__kicker mono">
-          night desk <span aria-hidden="true">/</span> live workspace
+          night desk <span aria-hidden="true">/</span> live channel desk
         </p>
         <div className="welcome__top-right">
           <button
@@ -161,7 +192,7 @@ export function InboxPage() {
             aria-controls="conversation-rail"
           >
             <PanelLeft size={15} aria-hidden="true" />
-            Conversations
+            Channels
           </button>
           <p className="welcome__date mono">
             {new Intl.DateTimeFormat('en', {
@@ -180,8 +211,7 @@ export function InboxPage() {
             {firstName(user?.displayName)}.
           </h1>
           <p className="welcome__lede">
-            The desk is open. Pick a conversation from the rail, or find someone and start a new
-            wire.
+            The desk is open. Pick a channel from the rail, or find someone and open a new wire.
           </p>
 
           <div className="welcome__actions">
@@ -205,44 +235,51 @@ export function InboxPage() {
           <dl className="welcome__ledger">
             <div>
               <dt className="mono">unread</dt>
-              <dd>{inbox.isPending ? '—' : unreadTotal > 0 ? padCount(unreadTotal) : '00'}</dd>
+              <dd className={unreadTotal > 0 ? 'is-unread' : undefined}>
+                {inbox.isPending ? '—' : unreadTotal > 0 ? padCount(unreadTotal) : '00'}
+              </dd>
             </div>
             <div>
-              <dt className="mono">threads</dt>
+              <dt className="mono">channels</dt>
               <dd>{inbox.isPending ? '—' : padCount(conversations.length)}</dd>
             </div>
             <div>
               <dt className="mono">live now</dt>
-              <dd>{inbox.isPending ? '—' : liveNow > 0 ? padCount(liveNow) : '—'}</dd>
+              <dd className={liveNow > 0 ? 'is-live' : undefined}>
+                {inbox.isPending ? '—' : liveNow > 0 ? padCount(liveNow) : '—'}
+              </dd>
             </div>
           </dl>
         </div>
 
         <aside className="welcome__aside" aria-labelledby="welcome-ai-title">
           <div className="welcome__aside-head">
-            <p className="mono">the AI desk</p>
+            <p className="mono">AI desk / 03 operators</p>
             <BotBadge />
           </div>
-          <h2 id="welcome-ai-title">Ask Ada, Milo or Nova.</h2>
+          <h2 id="welcome-ai-title">The operators on the desk.</h2>
           <p className="welcome__aside-copy">
-            Three AI teammates, each with a different way of thinking. They work in direct
-            threads.
+            Ada, Milo and Nova work the AI desk. Each runs a direct channel with a different way of
+            thinking.
           </p>
 
-          <ul className="bot-roster" aria-label="AI teammates">
-            {BOT_ROSTER.map((bot) => {
+          <ul className="bot-roster" aria-label="AI operators">
+            {BOT_ROSTER.map((bot, index) => {
               const botThread = botThreads.get(bot.name.toLowerCase());
               const href = botThread
                 ? `/c/${botThread.conversationId}`
                 : `/new?with=${encodeURIComponent(bot.name)}`;
               const action = botThread
-                ? `Open your thread with ${bot.name}${
+                ? `Open your channel with ${bot.name}${
                     botThread.unreadCount > 0 ? `, ${botThread.unreadCount} unread` : ''
                   }`
-                : `Find ${bot.name} to start a direct thread`;
+                : `Find ${bot.name} to start a direct channel`;
               return (
                 <li key={bot.name}>
                   <Link to={href} className="bot-roster__item" aria-label={action} title={action}>
+                    <span className="bot-roster__index mono" aria-hidden="true">
+                      AI{String(index + 1).padStart(2, '0')}
+                    </span>
                     <Monogram name={bot.name} size="xs" />
                     <span className="bot-roster__text">
                       <span className="bot-roster__name">
@@ -265,7 +302,7 @@ export function InboxPage() {
             })}
           </ul>
 
-          <p className="welcome__aside-foot mono">AI teammates · direct threads only</p>
+          <p className="welcome__aside-foot mono">three operators · direct channels only</p>
           <PrivateWindowNote compact />
         </aside>
       </div>
@@ -273,7 +310,7 @@ export function InboxPage() {
       <section className="welcome__activity" aria-labelledby="welcome-activity-title">
         <div className="welcome__section-head">
           <div>
-            <p className="mono">live desk</p>
+            <p className="mono">recent transmissions</p>
             <h2 id="welcome-activity-title">Pick up where you left off.</h2>
           </div>
           <p className="mono welcome__section-meta">
@@ -315,8 +352,8 @@ export function InboxPage() {
               <Radio size={18} aria-hidden="true" />
             </span>
             <div>
-              <h3>No signals on the desk yet.</h3>
-              <p>Start a thread with someone, or open the AI desk and ask a first question.</p>
+              <h3>No channels on the desk yet.</h3>
+              <p>Open a channel with someone, or visit the AI desk and ask a first question.</p>
             </div>
             <Link to="/new" className="button button--ink button--small">
               Find someone
@@ -326,8 +363,8 @@ export function InboxPage() {
 
         {pickupThreads.length > 0 && (
           <div className="welcome__threads">
-            {pickupThreads.map((conversation) => (
-              <ThreadCard key={conversation.conversationId} conversation={conversation} />
+            {pickupThreads.map((conversation, index) => (
+              <ThreadCard key={conversation.conversationId} conversation={conversation} index={index} />
             ))}
           </div>
         )}
@@ -335,7 +372,7 @@ export function InboxPage() {
 
       <footer className="welcome__footer mono">
         <span>banter / demo workspace</span>
-        <span>new messages arrive live</span>
+        <span>channel desk · new transmissions arrive live</span>
       </footer>
     </section>
   );
