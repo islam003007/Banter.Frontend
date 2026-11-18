@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  ArrowLeft,
   ArrowRight,
   Check,
   Loader2,
@@ -16,7 +15,6 @@ import { BOT_NAMES, botPersona, resolveIsBot } from '../lib/bots';
 import { queryKeys } from '../lib/queryKeys';
 import type { UserSearchResult } from '../lib/types';
 import { useAuth } from '../auth/AuthProvider';
-import { useRail } from '../layouts/RailContext';
 import { BotBadge } from '../components/BotBadge';
 import { Monogram, PresenceDot } from '../components/Monogram';
 
@@ -37,7 +35,6 @@ export function NewConversationPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { drawerOpen, openDrawer } = useRail();
   const [searchParams] = useSearchParams();
   const prefilledSearch = searchParams.get('with')?.trim() ?? '';
   const [mode, setMode] = useState<Mode>('direct');
@@ -137,21 +134,11 @@ export function NewConversationPage() {
   return (
     <section className="new-thread page" aria-labelledby="new-thread-title">
       <header className="page__header">
-        <button
-          type="button"
-          className="back-link page__mobile-menu"
-          onClick={openDrawer}
-          aria-expanded={drawerOpen}
-          aria-controls="conversation-rail"
-        >
-          <ArrowLeft size={15} aria-hidden="true" />
-          Conversations
-        </button>
         <p className="mono page__kicker">start a thread</p>
         <h1 id="new-thread-title">Find your people.</h1>
         <p className="page__lede">
           Search the directory, choose a direct message or gather a group. A new thread lands in
-          the rail as soon as it exists, even before the first message.
+          your conversations as soon as it exists, even before the first message.
         </p>
       </header>
 

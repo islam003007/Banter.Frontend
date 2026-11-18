@@ -22,7 +22,6 @@
   --font-body: 'Instrument Sans Variable', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
 
-  --rail-width: 372px;
   --page-gutter: clamp(24px, 4.4vw, 64px);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --shadow-offset: 4px 4px 0 var(--paper-deep);

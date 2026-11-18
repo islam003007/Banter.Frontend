@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, ArrowUpRight, MessageSquarePlus, Radio } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, MessageSquarePlus, PanelLeft, Radio } from 'lucide-react';
 import { useAuth } from '../auth/AuthProvider';
 import { api, errorMessage } from '../lib/api';
 import { BOT_ROSTER, resolveIsBot } from '../lib/bots';
 import { firstName, formatThreadTime } from '../lib/format';
 import { queryKeys } from '../lib/queryKeys';
 import type { InboxConversation } from '../lib/types';
+import { useWorkspaceUi } from '../layouts/WorkspaceUiContext';
 import { BotBadge } from '../components/BotBadge';
 import { Monogram, PresenceDot } from '../components/Monogram';
 import { PrivateWindowNote } from '../components/PrivateWindowNote';
@@ -114,6 +115,7 @@ function ThreadSkeleton() {
 
 export function InboxPage() {
   const { user } = useAuth();
+  const { openDrawer } = useWorkspaceUi();
   const inbox = useQuery({
     queryKey: queryKeys.inbox,
     queryFn: () => api.getInbox(50),
@@ -166,8 +168,7 @@ export function InboxPage() {
             {firstName(user?.displayName)}.
           </h1>
           <p className="welcome__lede">
-            The desk is open. Pick a conversation from the rail, or find someone and start a new
-            wire.
+            The desk is open. Pull up your conversations, or find someone and start a new wire.
           </p>
 
           <div className="welcome__actions">
@@ -182,6 +183,21 @@ export function InboxPage() {
                 <ArrowRight size={17} aria-hidden="true" />
               </Link>
             )}
+            <button
+              type="button"
+              className="button button--ghost"
+              onClick={() => openDrawer()}
+              aria-haspopup="dialog"
+              aria-controls="conversation-drawer"
+            >
+              <PanelLeft size={16} aria-hidden="true" />
+              Conversations
+              {unreadTotal > 0 && (
+                <span className="welcome__action-count" aria-label={`${unreadTotal} unread`}>
+                  {unreadTotal > 99 ? '99+' : unreadTotal}
+                </span>
+              )}
+            </button>
             <Link to="/new" className="button button--ghost">
               <MessageSquarePlus size={16} aria-hidden="true" />
               New thread

@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { ConversationRail } from '../components/ConversationRail';
-import { RailContext } from './RailContext';
+import { ConversationDrawer } from '../components/ConversationDrawer';
+import { WorkspaceHeader } from '../components/WorkspaceHeader';
+import { WorkspaceUiContext, type DrawerFocus } from './WorkspaceUiContext';
 
 type WorkspaceMode = 'inbox' | 'chat' | 'page';
 
@@ -13,68 +14,61 @@ function modeFor(pathname: string): WorkspaceMode {
 
 export function WorkspaceLayout() {
   const { pathname } = useLocation();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawer, setDrawer] = useState<{ open: boolean; focus: DrawerFocus }>({
+    open: false,
+    focus: 'search',
+  });
   const mode = modeFor(pathname);
 
-  useEffect(() => {
-    setDrawerOpen(false);
-  }, [pathname]);
+  const closeDrawer = useCallback(() => {
+    setDrawer((current) => ({ ...current, open: false }));
+  }, []);
+
+  const openDrawer = useCallback((focus: DrawerFocus = 'close') => {
+    setDrawer({ open: true, focus });
+  }, []);
 
   useEffect(() => {
-    if (!drawerOpen) return;
+    closeDrawer();
+  }, [pathname, closeDrawer]);
 
-    const previousFocus = document.activeElement as HTMLElement | null;
-    const focusTimer = window.setTimeout(() => {
-      document.querySelector<HTMLButtonElement>('.rail__close')?.focus();
-    }, 40);
-
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (
+        !event.altKey &&
+        (event.metaKey || event.ctrlKey) &&
+        event.key.toLowerCase() === 'k'
+      ) {
         event.preventDefault();
-        setDrawerOpen(false);
+        openDrawer('search');
       }
     };
 
     document.addEventListener('keydown', onKeyDown);
-    return () => {
-      window.clearTimeout(focusTimer);
-      document.removeEventListener('keydown', onKeyDown);
-      previousFocus?.focus();
-    };
-  }, [drawerOpen]);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [openDrawer]);
 
-  const rail = useMemo(
+  const value = useMemo(
     () => ({
-      drawerOpen,
-      openDrawer: () => setDrawerOpen(true),
-      closeDrawer: () => setDrawerOpen(false),
+      drawerOpen: drawer.open,
+      openDrawer,
+      closeDrawer,
     }),
-    [drawerOpen],
+    [drawer.open, openDrawer, closeDrawer],
   );
 
   return (
-    <RailContext.Provider value={rail}>
-      <div
-        className={`workspace workspace--${mode} ${
-          drawerOpen ? 'workspace--rail-open' : ''
-        }`.trim()}
-      >
+    <WorkspaceUiContext.Provider value={value}>
+      <div className={`workspace workspace--${mode}`.trim()}>
         <a className="skip-link" href="#main-content">
-          Skip to the conversation
+          Skip to main content
         </a>
-        <ConversationRail />
-        {drawerOpen && (
-          <button
-            type="button"
-            className="rail-scrim"
-            aria-label="Close conversations"
-            onClick={() => setDrawerOpen(false)}
-          />
-        )}
+        <WorkspaceHeader />
         <main className="workspace__main" id="main-content" tabIndex={-1}>
           <Outlet />
         </main>
+        {drawer.open && <ConversationDrawer focus={drawer.focus} onClose={closeDrawer} />}
       </div>
-    </RailContext.Provider>
+    </WorkspaceUiContext.Provider>
   );
 }

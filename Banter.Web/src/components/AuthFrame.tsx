@@ -4,54 +4,72 @@ import { Wordmark } from './Wordmark';
 export function AuthFrame({
   children,
   footer,
-  label = 'demo access',
-  step = '01 / 02',
+  marker = 'access board / 01',
 }: {
   children: ReactNode;
   footer?: ReactNode;
-  label?: string;
-  step?: string;
+  marker?: string;
 }) {
   return (
-    <main className="auth">
-      <section className="auth__brand" aria-label="Banter">
-        <header className="auth__masthead">
-          <Wordmark size="large" />
-          <span className="mono auth__build">portfolio build / 2026</span>
-        </header>
+    <main className="board">
+      <header className="board__masthead">
+        <Wordmark size="large" className="board__wordmark" />
+        <div className="board__masthead-meta mono">
+          <span>portfolio build / 2026</span>
+          <span className="board__signal-state">
+            <span className="board__signal-state-dot" aria-hidden="true" />
+            signal open
+          </span>
+        </div>
+      </header>
 
-        <div className="auth__brand-body">
-          <p className="auth__statement">The room is already talking.</p>
-          <p className="auth__brand-copy">
-            A live conversation desk with presence you can feel, threads that keep their place, and
-            a room that is already talking.
+      <section className="board__hero" aria-label="Banter">
+        <p className="board__kicker mono">live conversation desk / six demo seats</p>
+        <h1 className="board__statement">The room is already talking.</h1>
+        <p className="board__copy">
+          A live conversation desk with presence you can feel, threads that keep their place, and a
+          room that is already talking.
+        </p>
+
+        <div className="board__signal" aria-hidden="true">
+          <span className="board__signal-line" />
+          <span className="board__signal-ticks" />
+          <span className="board__signal-scan" />
+          <span className="board__signal-point board__signal-point--one">
+            <span className="board__signal-node" />
+            <span className="board__signal-label mono">presence</span>
+          </span>
+          <span className="board__signal-point board__signal-point--two">
+            <span className="board__signal-node board__signal-node--ink" />
+            <span className="board__signal-label mono">typing</span>
+          </span>
+          <span className="board__signal-point board__signal-point--three">
+            <span className="board__signal-node board__signal-node--coral" />
+            <span className="board__signal-label mono">delivery</span>
+          </span>
+        </div>
+      </section>
+
+      <div className="board__body">
+        <p className="board__marker mono">{marker}</p>
+        {children}
+      </div>
+
+      <footer className="board__foot">
+        {footer ? (
+          footer
+        ) : (
+          <p className="board__quiet-note mono">
+            The demo roster needs no password. Choose a name to step straight into the workspace.
           </p>
+        )}
+        <div className="board__tech mono" aria-label="Workspace features">
+          <span>live threads</span>
+          <span>people online</span>
+          <span>history</span>
+          <span>search</span>
         </div>
-
-        <div className="auth__signal" aria-hidden="true">
-          <span className="auth__signal-line" />
-          <span className="auth__signal-node auth__signal-node--one" />
-          <span className="auth__signal-node auth__signal-node--two" />
-          <span className="auth__signal-node auth__signal-node--three" />
-          <span className="auth__signal-label mono">signal open</span>
-        </div>
-
-        <footer className="auth__tech mono">
-          <span>Live threads</span>
-          <span>People online</span>
-          <span>History</span>
-          <span>Search</span>
-        </footer>
-      </section>
-
-      <section className="auth__panel" aria-label={label}>
-        <div className="auth__panel-head">
-          <span className="mono">{label}</span>
-          <span className="mono auth__step">{step}</span>
-        </div>
-        <div className="auth__panel-inner">{children}</div>
-        {footer && <div className="auth__panel-foot">{footer}</div>}
-      </section>
+      </footer>
     </main>
   );
 }

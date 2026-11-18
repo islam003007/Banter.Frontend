@@ -2,12 +2,10 @@ import { useState, type FormEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
-  ArrowLeft,
   ArrowUpRight,
   Eye,
   EyeOff,
   Loader2,
-  LockKeyhole,
   RefreshCw,
 } from 'lucide-react';
 import { AuthFrame } from '../components/AuthFrame';
@@ -17,14 +15,11 @@ import { useAuth } from '../auth/AuthProvider';
 import { api, errorMessage } from '../lib/api';
 import { queryKeys } from '../lib/queryKeys';
 
-type Mode = 'demo' | 'password';
-
 export function LoginPage() {
   const { refreshSession } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: string } | null)?.from;
-  const [mode, setMode] = useState<Mode>('demo');
   const [pendingDemoId, setPendingDemoId] = useState<string | null>(null);
   const [demoError, setDemoError] = useState<string | null>(null);
   const [email, setEmail] = useState('');
@@ -82,53 +77,50 @@ export function LoginPage() {
 
   return (
     <AuthFrame
+      marker="access board / 01"
       footer={
-        <p className="auth__quiet-note mono">
+        <p className="board__quiet-note mono">
           The demo roster needs no password. Choose a name above to step straight into the
           workspace.
         </p>
       }
     >
-      {mode === 'demo' ? (
-        <div className="auth-form">
-          <div className="auth-form__heading">
-            <h1>Step into the desk.</h1>
-            <p>
-              Six people already have conversations here. Choose a session and the inbox opens
-              with their history.
+      <div className="access">
+        <section className="board-section" aria-labelledby="demo-heading">
+          <div className="board-section__head">
+            <div>
+              <p className="mono board-section__index">01 / demo sessions</p>
+              <h2 id="demo-heading">Choose a warm seat.</h2>
+            </div>
+            <p className="board-section__note">
+              Six people already have conversations here. Pick one and the inbox opens with their
+              history.
             </p>
           </div>
 
-          <div className="demo-list" aria-live="polite">
+          <div className="demo-board" aria-live="polite">
             {demoUsers.isPending && (
               <div className="demo-loading" role="status" aria-label="Loading demo sessions">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <span key={index} />
+                {Array.from({ length: 6 }).map((_, index) => (
+                  <span className="demo-loading__tile" key={index} />
                 ))}
               </div>
             )}
 
             {demoUsers.isError && (
               <div className="demo-unavailable" role="alert">
-                <p className="mono">demo access unavailable</p>
-                <p>{errorMessage(demoUsers.error)}</p>
-                <div className="demo-unavailable__actions">
-                  <button
-                    type="button"
-                    className="button button--ghost button--small"
-                    onClick={() => void demoUsers.refetch()}
-                  >
-                    <RefreshCw size={14} aria-hidden="true" />
-                    Try again
-                  </button>
-                  <button
-                    type="button"
-                    className="text-button"
-                    onClick={() => setMode('password')}
-                  >
-                    Sign in with email instead
-                  </button>
+                <div>
+                  <p className="mono">demo access unavailable</p>
+                  <p>{errorMessage(demoUsers.error)}</p>
                 </div>
+                <button
+                  type="button"
+                  className="button button--ghost button--small"
+                  onClick={() => void demoUsers.refetch()}
+                >
+                  <RefreshCw size={14} aria-hidden="true" />
+                  Try again
+                </button>
               </div>
             )}
 
@@ -146,6 +138,9 @@ export function LoginPage() {
                   disabled={disabled}
                   aria-label={`Continue as ${user.displayName}`}
                 >
+                  <span className="demo-user__index mono" aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
                   <Monogram name={user.displayName} src={user.profilePictureUrl} size="md" />
                   <span className="demo-user__identity">
                     <span className="demo-user__name">
@@ -167,43 +162,25 @@ export function LoginPage() {
           </div>
 
           {demoError && (
-            <p className="form-error" role="alert">
+            <p className="form-error board-form-error" role="alert">
               {demoError}
             </p>
           )}
+        </section>
 
-          <div className="auth-divider">
-            <span className="mono">or</span>
-          </div>
-
-          <div className="auth-links">
-            <button type="button" className="text-button text-button--strong" onClick={() => setMode('password')}>
-              <LockKeyhole size={15} aria-hidden="true" />
-              Use email and password
-            </button>
-            <p>
-              New here?{' '}
-              <Link to="/register" className="inline-link">
-                Create a demo account
-              </Link>
+        <section className="board-section board-section--email" aria-labelledby="email-heading">
+          <div className="board-section__head">
+            <div>
+              <p className="mono board-section__index">02 / standard access</p>
+              <h2 id="email-heading">Or use your own email.</h2>
+            </div>
+            <p className="board-section__note">
+              The roster is faster, but a real account works here too. New seats are created in
+              seconds.
             </p>
           </div>
 
-          <PrivateWindowNote />
-        </div>
-      ) : (
-        <div className="auth-form">
-          <button type="button" className="back-link" onClick={() => setMode('demo')}>
-            <ArrowLeft size={15} aria-hidden="true" />
-            Back to demo access
-          </button>
-
-          <div className="auth-form__heading">
-            <h1>Sign in with your email.</h1>
-            <p>The demo roster is faster, but your own account works here too.</p>
-          </div>
-
-          <form className="form" onSubmit={(event) => void handlePasswordLogin(event)}>
+          <form className="board-form" onSubmit={(event) => void handlePasswordLogin(event)}>
             <label className="field">
               <span className="field__label mono">email</span>
               <input
@@ -238,31 +215,45 @@ export function LoginPage() {
                   onClick={() => setShowPassword((value) => !value)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <EyeOff size={17} aria-hidden="true" /> : <Eye size={17} aria-hidden="true" />}
+                  {showPassword ? (
+                    <EyeOff size={17} aria-hidden="true" />
+                  ) : (
+                    <Eye size={17} aria-hidden="true" />
+                  )}
                 </button>
               </span>
             </div>
 
-            {loginError && (
-              <p className="form-error" role="alert">
-                {loginError}
-              </p>
-            )}
-
-            <button type="submit" className="button button--ink button--wide" disabled={loginPending}>
+            <button
+              type="submit"
+              className="button button--ink board-form__submit"
+              disabled={loginPending}
+            >
               {loginPending && <Loader2 className="spin" size={16} aria-hidden="true" />}
               {loginPending ? 'Signing in…' : 'Sign in'}
             </button>
+
+            {loginError && (
+              <p className="form-error board-form-error" role="alert">
+                {loginError}
+              </p>
+            )}
           </form>
 
-          <p className="auth-links auth-links--plain">
-            No account?{' '}
-            <Link to="/register" className="inline-link">
-              Register one
-            </Link>
-          </p>
-        </div>
-      )}
+          <div className="board-form__foot">
+            <div className="board-form__links">
+              <p>
+                New here?{' '}
+                <Link to="/register" className="inline-link">
+                  Create a demo account
+                </Link>
+              </p>
+              <p className="mono">cookie session · no credentials stored in this client</p>
+            </div>
+            <PrivateWindowNote compact />
+          </div>
+        </section>
+      </div>
     </AuthFrame>
   );
 }
