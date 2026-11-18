@@ -22,6 +22,7 @@ import {
   ChevronUp,
   Info,
   Loader2,
+  PanelLeft,
   RefreshCw,
   WifiOff,
 } from 'lucide-react';
@@ -32,8 +33,10 @@ import { queryKeys } from '../lib/queryKeys';
 import type { ChatMessage, InboxPage, MessagesPage } from '../lib/types';
 import { useAuth } from '../auth/AuthProvider';
 import { useRealtime } from '../realtime/RealtimeProvider';
+import { useRail } from '../layouts/RailContext';
 import { BotBadge } from '../components/BotBadge';
 import { Monogram, PresenceDot } from '../components/Monogram';
+import { ConnectionStatus } from '../components/ConnectionStatus';
 import { DetailsDrawer } from '../components/DetailsDrawer';
 import { ErrorState } from '../components/PageState';
 
@@ -116,6 +119,7 @@ export function ChatPage() {
   const { conversationId = '' } = useParams<{ conversationId: string }>();
   const { user } = useAuth();
   const { state: realtimeState, retry: retryRealtime, botTyping } = useRealtime();
+  const { drawerOpen, openDrawer } = useRail();
   const queryClient = useQueryClient();
 
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -483,10 +487,18 @@ export function ChatPage() {
       <header className="chat__header">
         <div className="chat__topline">
           <div className="chat__topline-left">
+            <button
+              type="button"
+              className="icon-button chat__rail-toggle"
+              onClick={openDrawer}
+              aria-label="Open conversations"
+              aria-expanded={drawerOpen}
+              aria-controls="conversation-rail"
+            >
+              <PanelLeft size={20} aria-hidden="true" />
+            </button>
             <span className="mono chat__eyebrow">live thread</span>
-            <span className="mono chat__eyebrow-detail">
-              {isGroup ? 'group channel' : isBotConversation ? 'AI direct thread' : 'direct thread'}
-            </span>
+            <ConnectionStatus compact />
           </div>
           <button
             type="button"

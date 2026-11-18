@@ -9,6 +9,14 @@ interface WordmarkProps {
 function Mark({ size, className = '' }: Omit<WordmarkProps, 'linked'>) {
   return (
     <span className={`wordmark wordmark--${size ?? 'small'} ${className}`.trim()}>
+      <img
+        className="wordmark__mark"
+        src="/brand/banter-mark.png"
+        alt=""
+        width={289}
+        height={363}
+        aria-hidden="true"
+      />
       <span className="wordmark__letters">banter</span>
       <span className="wordmark__dot" aria-hidden="true" />
     </span>

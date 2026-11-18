@@ -7,7 +7,7 @@ import { BOT_ROSTER, resolveIsBot } from '../lib/bots';
 import { firstName, formatThreadTime } from '../lib/format';
 import { queryKeys } from '../lib/queryKeys';
 import type { InboxConversation } from '../lib/types';
-import { useWorkspaceUi } from '../layouts/WorkspaceUiContext';
+import { useRail } from '../layouts/RailContext';
 import { BotBadge } from '../components/BotBadge';
 import { Monogram, PresenceDot } from '../components/Monogram';
 import { PrivateWindowNote } from '../components/PrivateWindowNote';
@@ -115,7 +115,7 @@ function ThreadSkeleton() {
 
 export function InboxPage() {
   const { user } = useAuth();
-  const { openDrawer } = useWorkspaceUi();
+  const { drawerOpen, openDrawer } = useRail();
   const inbox = useQuery({
     queryKey: queryKeys.inbox,
     queryFn: () => api.getInbox(50),
@@ -150,15 +150,27 @@ export function InboxPage() {
     <section className="welcome" aria-labelledby="welcome-heading">
       <div className="welcome__top">
         <p className="welcome__kicker mono">
-          signal desk <span aria-hidden="true">/</span> live workspace
+          night desk <span aria-hidden="true">/</span> live workspace
         </p>
-        <p className="welcome__date mono">
-          {new Intl.DateTimeFormat('en', {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-          }).format(new Date())}
-        </p>
+        <div className="welcome__top-right">
+          <button
+            type="button"
+            className="rail-trigger"
+            onClick={openDrawer}
+            aria-expanded={drawerOpen}
+            aria-controls="conversation-rail"
+          >
+            <PanelLeft size={15} aria-hidden="true" />
+            Conversations
+          </button>
+          <p className="welcome__date mono">
+            {new Intl.DateTimeFormat('en', {
+              weekday: 'long',
+              day: 'numeric',
+              month: 'long',
+            }).format(new Date())}
+          </p>
+        </div>
       </div>
 
       <div className="welcome__hero">
@@ -168,7 +180,8 @@ export function InboxPage() {
             {firstName(user?.displayName)}.
           </h1>
           <p className="welcome__lede">
-            The desk is open. Pull up your conversations, or find someone and start a new wire.
+            The desk is open. Pick a conversation from the rail, or find someone and start a new
+            wire.
           </p>
 
           <div className="welcome__actions">
@@ -183,21 +196,6 @@ export function InboxPage() {
                 <ArrowRight size={17} aria-hidden="true" />
               </Link>
             )}
-            <button
-              type="button"
-              className="button button--ghost"
-              onClick={() => openDrawer()}
-              aria-haspopup="dialog"
-              aria-controls="conversation-drawer"
-            >
-              <PanelLeft size={16} aria-hidden="true" />
-              Conversations
-              {unreadTotal > 0 && (
-                <span className="welcome__action-count" aria-label={`${unreadTotal} unread`}>
-                  {unreadTotal > 99 ? '99+' : unreadTotal}
-                </span>
-              )}
-            </button>
             <Link to="/new" className="button button--ghost">
               <MessageSquarePlus size={16} aria-hidden="true" />
               New thread

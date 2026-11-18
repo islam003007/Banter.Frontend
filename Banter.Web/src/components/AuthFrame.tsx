@@ -4,7 +4,7 @@ import { Wordmark } from './Wordmark';
 export function AuthFrame({
   children,
   footer,
-  marker = 'access board / 01',
+  marker = 'access / 01',
 }: {
   children: ReactNode;
   footer?: ReactNode;
@@ -12,10 +12,17 @@ export function AuthFrame({
 }) {
   return (
     <main className="board">
+      <img
+        className="board__watermark"
+        src="/brand/banter-mark.png"
+        alt=""
+        aria-hidden="true"
+      />
+
       <header className="board__masthead">
         <Wordmark size="large" className="board__wordmark" />
         <div className="board__masthead-meta mono">
-          <span>portfolio build / 2026</span>
+          <span>night signal / 2026</span>
           <span className="board__signal-state">
             <span className="board__signal-state-dot" aria-hidden="true" />
             signal open
@@ -25,7 +32,9 @@ export function AuthFrame({
 
       <section className="board__hero" aria-label="Banter">
         <p className="board__kicker mono">live conversation desk / six demo seats</p>
-        <h1 className="board__statement">The room is already talking.</h1>
+        <h1 className="board__statement">
+          The room is <span>already talking.</span>
+        </h1>
         <p className="board__copy">
           A live conversation desk with presence you can feel, threads that keep their place, and a
           room that is already talking.
@@ -65,9 +74,9 @@ export function AuthFrame({
         )}
         <div className="board__tech mono" aria-label="Workspace features">
           <span>live threads</span>
-          <span>people online</span>
+          <span>group rooms</span>
+          <span>presence</span>
           <span>history</span>
-          <span>search</span>
         </div>
       </footer>
     </main>

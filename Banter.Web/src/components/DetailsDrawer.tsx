@@ -296,7 +296,7 @@ export function DetailsDrawer({
 
           <div className="details-drawer__signature">
             <Users size={16} aria-hidden="true" />
-            <span className="mono">banter / signal desk</span>
+            <span className="mono">banter / night signal</span>
           </div>
         </div>
       </div>

@@ -77,7 +77,7 @@ export function LoginPage() {
 
   return (
     <AuthFrame
-      marker="access board / 01"
+      marker="access / 01"
       footer={
         <p className="board__quiet-note mono">
           The demo roster needs no password. Choose a name above to step straight into the
@@ -90,7 +90,7 @@ export function LoginPage() {
           <div className="board-section__head">
             <div>
               <p className="mono board-section__index">01 / demo sessions</p>
-              <h2 id="demo-heading">Choose a warm seat.</h2>
+              <h2 id="demo-heading">Choose a seat.</h2>
             </div>
             <p className="board-section__note">
               Six people already have conversations here. Pick one and the inbox opens with their
@@ -248,7 +248,7 @@ export function LoginPage() {
                   Create a demo account
                 </Link>
               </p>
-              <p className="mono">cookie session · no credentials stored in this client</p>
+              <p className="mono">your session stays in this browser</p>
             </div>
             <PrivateWindowNote compact />
           </div>

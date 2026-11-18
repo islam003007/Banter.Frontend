@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, Loader2 } from 'lucide-react';
+import { ArrowLeft, LogOut, Loader2 } from 'lucide-react';
 import { useAuth } from '../auth/AuthProvider';
 import { api, errorMessage } from '../lib/api';
+import { useRail } from '../layouts/RailContext';
 import { Monogram } from '../components/Monogram';
 import { ConnectionStatus } from '../components/ConnectionStatus';
 import { PrivateWindowNote } from '../components/PrivateWindowNote';
@@ -10,6 +11,7 @@ import { PrivateWindowNote } from '../components/PrivateWindowNote';
 export function MePage() {
   const { user, clearSession } = useAuth();
   const navigate = useNavigate();
+  const { drawerOpen, openDrawer } = useRail();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,6 +33,16 @@ export function MePage() {
   return (
     <section className="session-page page" aria-labelledby="session-title">
       <header className="page__header">
+        <button
+          type="button"
+          className="back-link page__mobile-menu"
+          onClick={openDrawer}
+          aria-expanded={drawerOpen}
+          aria-controls="conversation-rail"
+        >
+          <ArrowLeft size={15} aria-hidden="true" />
+          Conversations
+        </button>
         <p className="mono page__kicker">your seat</p>
       </header>
 
@@ -40,7 +52,7 @@ export function MePage() {
             <Monogram name={user.displayName} src={user.profilePictureUrl} size="xl" />
             <div>
               <h1 id="session-title">{user.displayName}</h1>
-              <p className="mono">seated at the signal desk</p>
+              <p className="mono">seated at the night desk</p>
             </div>
           </div>
 

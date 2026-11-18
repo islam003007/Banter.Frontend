@@ -1,28 +1,56 @@
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  --paper: #f2ecdf;
-  --paper-bright: #faf5e9;
-  --paper-deep: #e5dcc9;
-  --paper-dim: #d9ceb8;
-  --ink: #1b1a16;
-  --ink-soft: #575248;
-  --ink-muted: #6e675a;
-  --rule: #cfc4b0;
-  --rule-strong: #a89b84;
-  --lime: #c9f04a;
-  --lime-deep: #5f7000;
-  --lime-ink: #202805;
-  --coral: #ef5b3c;
-  --coral-deep: #b53720;
-  --blush: #f3d8cd;
-  --danger: #a72c16;
+  /* Night Signal surfaces */
+  --night: #071a14;
+  --night-deep: #04120e;
+  --night-soft: #0a2119;
+  --surface: #0c261d;
+  --surface-raised: #103026;
+  --surface-bright: #14392d;
+  --surface-glass: rgba(16, 48, 38, 0.68);
 
-  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
-  --font-body: 'Instrument Sans Variable', 'Helvetica Neue', Arial, sans-serif;
+  /* Signal greens */
+  --emerald: #22b573;
+  --emerald-deep: #0f7d4f;
+  --mint: #78f0b7;
+  --mint-soft: #a8f7d1;
+  --mint-ink: #041710;
+  --signal: linear-gradient(135deg, #22b573 0%, #78f0b7 100%);
+  --signal-reverse: linear-gradient(135deg, #78f0b7 0%, #22b573 100%);
+  --signal-soft: linear-gradient(135deg, rgba(34, 181, 115, 0.16), rgba(120, 240, 183, 0.08));
+  --glow: rgba(34, 181, 115, 0.28);
+  --glow-soft: rgba(120, 240, 183, 0.12);
+
+  /* Types */
+  --porcelain: #f2fbf6;
+  --porcelain-dim: #d4e8dd;
+  --sage: #a4bfb1;
+  --sage-muted: #7f9a8d;
+  --sage-faint: #759183;
+  --line: rgba(150, 222, 186, 0.13);
+  --line-strong: rgba(150, 222, 186, 0.26);
+  --line-bright: rgba(150, 222, 186, 0.42);
+
+  /* States */
+  --danger: #ff8f80;
+  --danger-deep: #ff6f5e;
+  --danger-wash: rgba(255, 111, 94, 0.11);
+  --warning: #f2c879;
+
+  --font-display: 'Manrope Variable', 'Manrope', 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-body: 'Manrope Variable', 'Manrope', 'Segoe UI', Helvetica, Arial, sans-serif;
   --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
 
-  --page-gutter: clamp(24px, 4.4vw, 64px);
+  --page-gutter: clamp(22px, 3.4vw, 48px);
+  --rail-width: 332px;
+  --radius-xs: 10px;
+  --radius-sm: 14px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --shadow-offset: 4px 4px 0 var(--paper-deep);
+  --shadow-panel: 0 26px 80px rgba(2, 12, 8, 0.45);
+  --shadow-float: 0 16px 46px rgba(2, 12, 8, 0.4);
+  --focus-ring: 0 0 0 5px rgba(34, 181, 115, 0.22);
 }

@@ -73,7 +73,7 @@ export function RegisterPage() {
 
   return (
     <AuthFrame
-      marker="access board / 02"
+      marker="access / 02"
       footer={
         <p className="board__quiet-note mono">
           You will be signed in as soon as your account is created. The demo roster needs no
@@ -96,7 +96,7 @@ export function RegisterPage() {
           <div className="account-form__lead">
             <Link to="/login" className="back-link">
               <ArrowLeft size={15} aria-hidden="true" />
-              Back to the access board
+              Back to sign in
             </Link>
             <p className="account-form__intro">
               Four fields, one seat. Your display name is how everyone in the room will see you.
@@ -201,7 +201,7 @@ export function RegisterPage() {
               <span>live threads</span>
               <span>presence</span>
               <span>saved history</span>
-              <span>direct + group wires</span>
+              <span>direct + group threads</span>
             </div>
             <PrivateWindowNote compact />
           </div>
