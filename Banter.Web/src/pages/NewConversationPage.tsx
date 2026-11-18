@@ -340,8 +340,8 @@ export function NewConversationPage() {
           {selected.length === 0 ? (
             <p className="builder__empty">
               {mode === 'direct'
-                ? 'Search on the left and pick one person or AI teammate.'
-                : 'Search on the left and pick at least two people.'}
+                ? 'Search the directory and pick one person or AI teammate.'
+                : 'Search the directory and pick at least two people.'}
             </p>
           ) : (
             <ul className="builder__selected">
