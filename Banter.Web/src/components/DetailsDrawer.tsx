@@ -170,7 +170,7 @@ export function DetailsDrawer({
             )}
 
             {detail && participants.length === 0 && (
-              <p className="details-muted">This thread does not expose its participant list.</p>
+              <p className="details-muted">The people in this thread are not available right now.</p>
             )}
 
             {participants.length > 0 && (
@@ -230,12 +230,12 @@ export function DetailsDrawer({
                 </dd>
               </div>
               <div>
-                <dt className="mono">realtime</dt>
-                <dd>SignalR over cookies</dd>
+                <dt className="mono">live</dt>
+                <dd>messages arrive as they are sent</dd>
               </div>
               <div>
                 <dt className="mono">history</dt>
-                <dd>cursor paginated</dd>
+                <dd>saved in order</dd>
               </div>
             </dl>
           </section>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowLeft,
@@ -38,9 +38,11 @@ export function NewConversationPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { drawerOpen, openDrawer } = useRail();
+  const [searchParams] = useSearchParams();
+  const prefilledSearch = searchParams.get('with')?.trim() ?? '';
   const [mode, setMode] = useState<Mode>('direct');
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [search, setSearch] = useState(prefilledSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(prefilledSearch);
   const [selected, setSelected] = useState<UserSearchResult[]>([]);
   const [groupTitle, setGroupTitle] = useState('');
   const [pending, setPending] = useState(false);
@@ -118,7 +120,7 @@ export function NewConversationPage() {
         mode === 'group' ? groupTitle.trim() : null,
       );
       if (!conversationId) {
-        setError('The conversation was created, but the API did not return an id.');
+        setError('The thread was created, but we could not open it. Check your inbox and try again.');
         return;
       }
       await queryClient.invalidateQueries({ queryKey: queryKeys.inbox });

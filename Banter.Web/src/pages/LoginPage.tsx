@@ -84,8 +84,8 @@ export function LoginPage() {
     <AuthFrame
       footer={
         <p className="auth__quiet-note mono">
-          No demo password is stored in this app. Demo sessions use the seeded-user allowlist on
-          the API.
+          The demo roster needs no password. Choose a name above to step straight into the
+          workspace.
         </p>
       }
     >
@@ -94,8 +94,8 @@ export function LoginPage() {
           <div className="auth-form__heading">
             <h1>Step into the desk.</h1>
             <p>
-              Six seeded people already have conversations here. Choose a session and the inbox
-              opens with their history.
+              Six people already have conversations here. Choose a session and the inbox opens
+              with their history.
             </p>
           </div>
 
@@ -200,7 +200,7 @@ export function LoginPage() {
 
           <div className="auth-form__heading">
             <h1>Sign in with your email.</h1>
-            <p>The demo picker is faster, but the normal cookie login still works.</p>
+            <p>The demo roster is faster, but your own account works here too.</p>
           </div>
 
           <form className="form" onSubmit={(event) => void handlePasswordLogin(event)}>

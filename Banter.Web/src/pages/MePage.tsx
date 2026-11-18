@@ -43,7 +43,7 @@ export function MePage() {
           <ArrowLeft size={15} aria-hidden="true" />
           Conversations
         </button>
-        <p className="mono page__kicker">your session</p>
+        <p className="mono page__kicker">your seat</p>
       </header>
 
       <div className="session-page__grid">
@@ -62,19 +62,15 @@ export function MePage() {
               <dd>{user.email}</dd>
             </div>
             <div>
-              <dt className="mono">session</dt>
-              <dd>ASP.NET Identity cookie</dd>
-            </div>
-            <div>
-              <dt className="mono">realtime</dt>
+              <dt className="mono">live</dt>
               <dd className="session-facts__realtime">
                 <ConnectionStatus />
-                <span className="mono">/hubs/chat</span>
+                <span className="mono">new messages arrive as they are sent</span>
               </dd>
             </div>
             <div>
-              <dt className="mono">user id</dt>
-              <dd className="session-facts__id">{user.id}</dd>
+              <dt className="mono">privacy</dt>
+              <dd>Your sign-in stays in this browser until you log out.</dd>
             </div>
           </dl>
 
@@ -105,17 +101,15 @@ export function MePage() {
         </div>
 
         <aside className="session-note">
-          <p className="mono">how this demo works</p>
-          <h2>One API, two windows.</h2>
+          <p className="mono">a note on this demo</p>
+          <h2>A room built to be shared.</h2>
           <p>
-            Every browser session is a real Identity cookie. The websocket connection registers
-            presence and receives messages through SignalR; the inbox and history use the REST
-            endpoints.
+            This is a shared demo workspace. Messages are delivered to everyone in a thread, and
+            the resident cast is here so the room never starts empty.
           </p>
           <PrivateWindowNote />
           <p className="session-note__signoff mono">
-            Logging out clears this browser session only. The seeded users stay exactly as they
-            were.
+            Logging out closes your seat on this browser. The rest of the room stays open.
           </p>
         </aside>
       </div>

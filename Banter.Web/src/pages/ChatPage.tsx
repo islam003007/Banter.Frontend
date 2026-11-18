@@ -644,7 +644,7 @@ export function ChatPage() {
         {realtimeState === 'disconnected' && (
           <div className="realtime-banner" role="status">
             <WifiOff size={15} aria-hidden="true" />
-            <span>Realtime is offline. You can still send; reconnect to catch up on new messages.</span>
+            <span>Live updates are paused. You can still send; reconnect to catch up.</span>
             <button type="button" className="text-button" onClick={retryRealtime}>
               <RefreshCw size={13} aria-hidden="true" />
               Reconnect
@@ -694,10 +694,10 @@ export function ChatPage() {
         <div className="composer__note">
           <span className="mono">
             {realtimeState === 'connected'
-              ? 'delivery live over signalr'
+              ? 'messages arrive live'
               : realtimeState === 'connecting' || realtimeState === 'reconnecting'
                 ? 'restoring the live connection'
-                : 'rest fallback active'}
+                : 'live updates paused — send still works'}
           </span>
         </div>
       </div>

@@ -18,12 +18,12 @@ export function ConnectionStatus({ compact = false }: { compact?: boolean }) {
       aria-live="polite"
       title={
         state === 'connected'
-          ? 'SignalR is connected'
+          ? 'The live desk is connected'
           : state === 'connecting'
-            ? 'Opening the realtime connection'
+            ? 'Opening the live connection'
             : state === 'reconnecting'
-              ? 'The realtime connection dropped; reconnecting'
-              : 'Realtime is offline'
+              ? 'The live connection dropped; reconnecting'
+              : 'Live updates are paused'
       }
     >
       <span className="connection__dot" aria-hidden="true" />

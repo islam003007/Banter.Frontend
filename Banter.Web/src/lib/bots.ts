@@ -9,6 +9,12 @@ const SEEDED_BOTS: Record<string, BotProfile> = {
   nova: { name: 'Nova', persona: 'Enthusiastic idea generator' },
 };
 
+export const BOT_ROSTER: readonly BotProfile[] = [
+  SEEDED_BOTS.ada,
+  SEEDED_BOTS.milo,
+  SEEDED_BOTS.nova,
+];
+
 export const BOT_NAMES = 'Ada, Milo and Nova';
 
 export function knownBot(name: string | null | undefined): BotProfile | null {

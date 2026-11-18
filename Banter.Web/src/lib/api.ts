@@ -130,7 +130,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
       },
     });
   } catch {
-    throw new ApiError(0, 'Network unavailable', 'The API did not answer. Check that Banter is running and try again.');
+    throw new ApiError(0, 'Network unavailable', 'Banter did not answer. Check your connection and try again.');
   }
 
   if (response.status === 401) {
@@ -151,7 +151,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   try {
     return JSON.parse(raw) as T;
   } catch {
-    throw new ApiError(response.status, 'Unexpected response', 'The API returned a response the app could not read.');
+    throw new ApiError(response.status, 'Unexpected response', 'The desk returned something the app could not read.');
   }
 }
 

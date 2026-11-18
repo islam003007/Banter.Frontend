@@ -23,8 +23,8 @@ export function AuthFrame({
         <div className="auth__brand-body">
           <p className="auth__statement">The room is already talking.</p>
           <p className="auth__brand-copy">
-            A realtime conversation desk built on cookie auth, SignalR delivery, presence, and
-            cursor-paginated history.
+            A live conversation desk with presence you can feel, threads that keep their place, and
+            a room that is already talking.
           </p>
         </div>
 
@@ -37,10 +37,10 @@ export function AuthFrame({
         </div>
 
         <footer className="auth__tech mono">
-          <span>ASP.NET Core 10</span>
-          <span>SignalR</span>
-          <span>PostgreSQL</span>
-          <span>Redis</span>
+          <span>Live threads</span>
+          <span>People online</span>
+          <span>History</span>
+          <span>Search</span>
         </footer>
       </section>
 

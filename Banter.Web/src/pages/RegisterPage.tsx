@@ -76,7 +76,7 @@ export function RegisterPage() {
       step="02 / 02"
       footer={
         <p className="auth__quiet-note mono">
-          Registration signs you in immediately. Email confirmation is disabled in this demo API.
+          You will be signed in as soon as your account is created.
         </p>
       }
     >
@@ -89,8 +89,8 @@ export function RegisterPage() {
         <div className="auth-form__heading">
           <h1>Make a seat at the desk.</h1>
           <p>
-            This creates a real ASP.NET Identity account. You will land in the inbox with a fresh
-            session, ready to search for someone.
+            Your account gets a seat at the desk, a fresh inbox, and a directory to search for your
+            first conversation.
           </p>
         </div>
 
