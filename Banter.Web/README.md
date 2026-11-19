@@ -3,10 +3,35 @@
 A portfolio demo client for the Banter chat API. React 19, TypeScript, Vite, TanStack Query,
 React Router, and SignalR. The UI is custom CSS — no component library, no Tailwind.
 
-The app is designed as a warm paper “signal desk”: a conversation rail and reading pane on
-desktop, a live chat with a conversation drawer on mobile. Cream canvas, charcoal ink, acid-lime
-connection signals, and coral unread/send accents. Fraunces sets the display type, Instrument Sans
-carries the body, and IBM Plex Mono handles metadata.
+The interface is **Night Signal / channel desk**: a near-black charcoal-green canvas, a channel
+rail and reading pane on desktop, and a focus-managed channel drawer on mobile. Signal green and
+mint carry brand, presence, active channels, and outbound messages; amber marks unread counts,
+bot typing, and transient attention; ice blue carries links and focus. Manrope sets display and
+body type, IBM Plex Mono carries metadata and channel indices. The UI is built around the
+channel-desk metaphor: numbered channels, transmission bands, uplink metadata, a live signal
+meter, and an AI operator roster.
+
+## Structure
+
+| Path | Responsibility |
+| --- | --- |
+| `src/app/` | Providers, query client, routes, render error boundary |
+| `src/features/auth/` | Session provider, route guards, login/register pages and forms |
+| `src/features/inbox/` | Channel desk, channel rail, recent transmissions, AI operators |
+| `src/features/conversation/` | Shared inbox/detail queries and conversation identity helpers |
+| `src/features/chat/` | Chat page, message timeline, composer, send/read/scroll/typing hooks |
+| `src/features/new-conversation/` | Debounced directory search, direct/group builder |
+| `src/features/details/` | Channel details drawer, participants, focus trap, leave flow |
+| `src/features/me/` | Session page |
+| `src/lib/api/` | Transport, contracts, normalizers, ProblemDetails errors, API client |
+| `src/lib/realtime/` | SignalR hub client, notification normalizers, cache updates, bot typing |
+| `src/lib/format/` | Pure date/time and text helpers |
+| `src/components/ui/` | Shared presentational primitives |
+| `src/test/` | Vitest setup, MSW server, fixtures, query-client/render helpers |
+| `e2e/` | Playwright smoke suite |
+
+Page components stay thin: data lives in feature hooks, cache math lives in pure functions, and
+presentational components receive plain props.
 
 ## Run it
 
@@ -38,7 +63,8 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`.
+Open `http://localhost:5173`. The dev server uses `strictPort: true`, so a port conflict fails
+loudly instead of silently moving to another port.
 
 The Vite dev proxy forwards `/api` and `/hubs` to `http://localhost:8080`, including the websocket
 upgrade. Override the API target when needed:
@@ -63,13 +89,57 @@ real deployment, serve `dist/` from any static host and reverse-proxy `/api` and
 on the same origin, with websocket upgrades enabled. Cookie authentication expects same-origin
 requests; no CORS configuration is needed.
 
+## Testing
+
+Unit and component tests use Vitest, jsdom, React Testing Library, user-event, and MSW. They run
+entirely in-process and need no API, database, or Redis.
+
+```bash
+npm test               # one run
+npm run test:watch     # watch mode
+npm run test:coverage  # v8 coverage; writes coverage/
+npm run typecheck      # tsc -b
+npm run build          # typecheck + production bundle
+```
+
+Coverage focuses on behaviour rather than snapshots: API transport and normalization, date/text
+formatting, message flattening/grouping, realtime cache updates and bot-typing expiry, composer
+keyboard behaviour, message list states, inbox/channel rail states, directory search and group
+builder rules, details focus trap/leave flow, auth guards, app routes, and the render boundary.
+
+### End-to-end smoke
+
+Playwright covers login, the inbox, an optimistic message send, starting a direct thread, and the
+details drawer. The suite needs a running Banter API with the demo roster enabled (default target
+`http://localhost:8080`, override with `VITE_API_TARGET`). Playwright starts Vite on port `5199`,
+runs the tests, and stops it again; it does not leave a server behind.
+
+```bash
+# once per machine, if the browser is not installed
+npx playwright install chromium
+
+npm run test:e2e
+```
+
+Useful overrides:
+
+```bash
+E2E_PORT=5210 npm run test:e2e                  # web-server port
+E2E_BASE_URL=http://localhost:5173 npm run test:e2e  # use an already-running frontend
+```
+
+`E2E_BASE_URL` disables Playwright's own web server, so that frontend must already proxy `/api`
+and `/hubs` to a running API. The smoke send writes a message to the Ahmed ↔ Mohamed thread, and
+the new-thread test may create or reuse the Ahmed ↔ Sara direct thread; run it against a
+disposable demo database.
+
 ## Demo access
 
 Open `/login`. The six seeded people appear as one-click session cards. Click **Continue as Ahmed**
 to enter the populated workspace. No password is rendered, stored, or bundled by this app; sign-in
 uses the API's seeded-user allowlist (`POST /api/v1/auth/demo-login`).
 
-A labelled “Use email and password” link opens the regular cookie login. `/register` creates a real
+The email/password form below the roster uses regular cookie login. `/register` creates a real
 ASP.NET Identity account and signs in immediately (email confirmation is disabled in the demo API).
 
 To see realtime:
@@ -89,14 +159,15 @@ part of this frontend.
 | --- | --- |
 | `/login` | One-click demo roster, standard email/password sign-in, private-window note |
 | `/register` | Secondary account form; auto signs in on success |
-| `/inbox` | Conversation rail with unread counts, presence, last message, and empty state; welcome pane on desktop |
+| `/inbox` | Channel rail with unread counts, presence, last message, AI roster; night-desk welcome pane |
 | `/c/:conversationId` | Cursor-paginated history, older-page loading with scroll anchoring, optimistic send, mark-read, details drawer, leave |
 | `/new` | Debounced user search with cursor paging, direct-message and group builder |
 | `/me` | Session sheet, connection state, logout |
 
-On mobile, `/inbox` is the full conversation list; chat is the primary screen, with the rail
-available as a focus-managed drawer. The realtime state is shown as `live`, `linking`,
-`reconnecting`, or `offline`, with a manual retry when the socket stops.
+On mobile, `/inbox` is the full night-desk welcome, chat is the primary screen, and the rail is a
+focus-managed drawer. The realtime state is shown as `live`, `linking`, `reconnecting`, or
+`offline`, with a manual retry when the socket stops. A render error is caught by the app error
+boundary instead of leaving a blank page.
 
 ## API contract used
 
@@ -126,7 +197,8 @@ The client targets the endpoints documented in
 Realtime `ReceiveMessage` is expected to include `content`, `senderDisplayName`,
 `senderProfilePictureUrl`, `conversationId`, and `createdAt`. Incoming messages update the open feed
 and the inbox cache immediately. If a conversation is not in the inbox cache, the inbox is
-invalidated so a newly created or newly active thread appears.
+invalidated so a newly created or newly active thread appears. Bot typing signals expire after 12
+seconds so a dropped signal never leaves the indicator stuck.
 
 ## Notes
 
@@ -134,4 +206,4 @@ invalidated so a newly created or newly active thread appears.
 - The composer sends on Enter; Shift+Enter inserts a newline. The optimistic message is marked
   “sending” until the API returns its id.
 - Direct threads cannot be left in the domain model; only group threads show the leave action.
-- `npm run typecheck` is available in addition to `dev`, `build`, and `preview`.
+- `npm run typecheck` is available in addition to `dev`, `build`, `preview`, and the test commands.

@@ -1,4 +1,5 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vitest/config';
+import { loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
@@ -15,7 +16,7 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       port: 5173,
-      strictPort: false,
+      strictPort: true,
       proxy: {
         '/api': proxy,
         '/hubs': { ...proxy, ws: true },
@@ -23,9 +24,34 @@ export default defineConfig(({ mode }) => {
     },
     preview: {
       port: 4173,
+      strictPort: true,
       proxy: {
         '/api': proxy,
         '/hubs': { ...proxy, ws: true },
+      },
+    },
+    test: {
+      environment: 'jsdom',
+      include: ['src/**/*.{test,spec}.{ts,tsx}'],
+      setupFiles: ['./src/test/polyfills.ts', './src/test/setup.ts'],
+      css: false,
+      pool: 'vmThreads',
+      restoreMocks: true,
+      clearMocks: true,
+      maxWorkers: 1,
+      fileParallelism: false,
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'html'],
+        reportsDirectory: './coverage',
+        include: ['src/**/*.{ts,tsx}'],
+        exclude: [
+          'src/main.tsx',
+          'src/vite-env.d.ts',
+          'src/**/*.test.{ts,tsx}',
+          'src/test/**',
+          'src/styles/**',
+        ],
       },
     },
   };

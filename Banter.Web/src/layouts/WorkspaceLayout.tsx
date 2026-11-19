@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { ConversationRail } from '../components/ConversationRail';
+import { ChannelRail } from '../features/inbox/ChannelRail';
 import { RailContext } from './RailContext';
 
 type WorkspaceMode = 'inbox' | 'chat' | 'page';
@@ -88,7 +88,7 @@ export function WorkspaceLayout() {
         <a className="skip-link" href="#main-content">
           Skip to the channel
         </a>
-        <ConversationRail />
+        <ChannelRail />
         {drawerOpen && (
           <button
             type="button"

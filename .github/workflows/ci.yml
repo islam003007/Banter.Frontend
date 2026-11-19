@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.23.4
+          cache: npm
+          cache-dependency-path: Banter.Web/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: Banter.Web
+
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: Banter.Web
+
+      - name: Unit and component tests
+        run: npm test
+        working-directory: Banter.Web
+
+      - name: Build
+        run: npm run build
+        working-directory: Banter.Web
+
+  # E2E requires the Banter API with PostgreSQL/Redis. Keep it as a documented
+  # local/live check until the API is available as a CI service.
