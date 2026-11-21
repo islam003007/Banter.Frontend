@@ -20,7 +20,7 @@ describe('conversation identity', () => {
     expect(identity.onlineCount).toBe(1);
     expect(identity.isBotConversation).toBe(false);
     expect(channelKind(identity)).toBe('direct channel');
-    expect(channelDetail(identity, null)).toBe('direct wire · away');
+    expect(channelDetail(identity, null)).toBe('direct channel · away');
   });
 
   it('falls back to the inbox row and seeded bot names', () => {

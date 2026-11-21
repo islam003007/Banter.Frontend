@@ -25,11 +25,31 @@ export function isUnauthorized(error: unknown): boolean {
   return error instanceof ApiError && error.status === 401;
 }
 
+const MESSAGE_COPY: Array<[RegExp, string]> = [
+  [/Passwords must have at least one non alphanumeric character\.?/i, 'Add a symbol, such as ! or @.'],
+  [/Passwords must have at least one uppercase/i, 'Add an uppercase letter.'],
+  [/Passwords must have at least one lowercase/i, 'Add a lowercase letter.'],
+  [/Passwords must have at least one digit/i, 'Add a number.'],
+  [/Passwords must be at least (\d+) characters/i, 'Use at least $1 characters.'],
+  [/((email|username).*(already taken|already exists)|duplicate username|a user with this email)/i, 'An account with this email already exists. Sign in instead.'],
+  [/(invalid login attempt|invalid credentials|incorrect password)/i, 'That email and password don’t match. Try again.'],
+  [/(failed to fetch|networkerror|load failed)/i, 'Banter didn’t answer. Check your connection and try again.'],
+  [/response did not include|the desk returned something the app could not read/i, 'We couldn’t read the response. Try again.'],
+  [/the request failed/i, 'The request didn’t go through. Try again.'],
+];
+
+export function humanizeMessage(message: string): string {
+  for (const [pattern, replacement] of MESSAGE_COPY) {
+    if (pattern.test(message)) return message.replace(pattern, replacement);
+  }
+  return message;
+}
+
 export function errorMessage(error: unknown): string {
   if (error instanceof ApiError) {
-    return error.detail || error.title || 'The request failed.';
+    return humanizeMessage(error.detail || error.title || 'The request failed.');
   }
-  if (error instanceof Error && error.message) return error.message;
+  if (error instanceof Error && error.message) return humanizeMessage(error.message);
   return 'Something went wrong. Try again.';
 }
 

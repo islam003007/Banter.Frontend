@@ -58,7 +58,7 @@ describe('Chat message list', () => {
       status: 'error',
       error: new ApiError(500, 'Failed', 'The history did not load.'),
     });
-    expect(screen.getByRole('heading', { name: 'The history did not load.' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'This channel’s history didn’t load.' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Try again/ })).toBeInTheDocument();
 
     rerender(
@@ -79,7 +79,7 @@ describe('Chat message list', () => {
         />
       </MemoryRouter>,
     );
-    expect(screen.getByRole('heading', { name: 'You cannot open this channel.' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'You can’t open this channel.' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Try again/ })).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Back to inbox/ })).toHaveAttribute('href', '/inbox');
   });
@@ -105,7 +105,7 @@ describe('Chat message list', () => {
     expect(screen.getByText('On it')).toBeInTheDocument();
     expect(screen.getByText('Did you push the migration?')).toBeInTheDocument();
     expect(document.querySelectorAll('.message--theirs.is-continuation')).toHaveLength(1);
-    expect(screen.getByText('start of this thread')).toBeInTheDocument();
+    expect(screen.getByText('start of this channel')).toBeInTheDocument();
   });
 
   it('offers older-page loading when the history has more', () => {

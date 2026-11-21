@@ -29,8 +29,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           <Wordmark size="large" />
           <p className="mono">the desk hit a fault</p>
           <p className="session-problem__message">
-            Something in the workspace stopped rendering. Reload to reopen the desk; your session
-            stays in this browser.
+            Something went wrong while opening the desk. Reload to try again; your session stays
+            in this browser.
           </p>
           <button
             type="button"

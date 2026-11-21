@@ -61,7 +61,7 @@ export function normalizeBotTyping(
     const botName =
       typeof botNameArgument === 'string' && botNameArgument.trim()
         ? botNameArgument.trim()
-        : 'AI teammate';
+        : 'AI operator';
     return { conversationId: value, botName, active: true };
   }
 
@@ -78,7 +78,7 @@ export function normalizeBotTyping(
     source.senderDisplayName ??
     source.name;
   const botName =
-    typeof candidate === 'string' && candidate.trim() ? candidate.trim() : 'AI teammate';
+    typeof candidate === 'string' && candidate.trim() ? candidate.trim() : 'AI operator';
   const active = source.isTyping ?? source.typing ?? source.active;
 
   return { conversationId, botName, active: active !== false };

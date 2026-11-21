@@ -553,6 +553,13 @@ svg {
   text-transform: uppercase;
 }
 
+.field__hint {
+  color: var(--sage-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
 .field input {
   width: 100%;
   min-height: 48px;

@@ -52,7 +52,7 @@ export function ChatHeader({
             {channelIndex && <span className="chat__channel-code">CH {channelIndex}</span>}
             <span>{channelKind}</span>
           </p>
-          <h1 id="chat-title">{title || 'Conversation'}</h1>
+          <h1 id="chat-title">{title || 'Channel'}</h1>
           <p className="chat__subtitle mono">
             {isGroup ? (
               <>
@@ -69,16 +69,16 @@ export function ChatHeader({
             ) : isBotConversation ? (
               <>
                 <BotBadge />
-                <span>AI teammate</span>
+                <span>AI operator</span>
                 <span className="chat__dot" aria-hidden="true" />
-                <span>direct wire</span>
+                <span>direct channel</span>
               </>
             ) : (
               <>
                 <PresenceDot online={online} label={online ? 'Online' : 'Offline'} />
                 <span>{online ? 'online' : 'away'}</span>
                 <span className="chat__dot" aria-hidden="true" />
-                <span>direct wire</span>
+                <span>direct channel</span>
               </>
             )}
           </p>

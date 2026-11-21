@@ -47,10 +47,10 @@ export function MessageList({
         <div className="chat__state">
           <p className="chat__state-kicker mono">signal interrupted</p>
           <ErrorState
-            title={forbidden ? 'You cannot open this channel.' : 'The history did not load.'}
+            title={forbidden ? 'You can’t open this channel.' : 'This channel’s history didn’t load.'}
             message={
               forbidden
-                ? 'This channel may have been left, or your session does not have access to it.'
+                ? 'You may have left this channel, or your account doesn’t have access to it.'
                 : errorMessage(error)
             }
             onRetry={forbidden ? undefined : onRetry}
@@ -89,7 +89,7 @@ export function MessageList({
                 {isFetchingOlder ? 'Loading older messages' : 'Load older messages'}
               </button>
             ) : (
-              <span className="mono">start of this thread</span>
+              <span className="mono">start of this channel</span>
             )}
           </div>
 

@@ -65,7 +65,7 @@ export function RegisterPage() {
               <h2 id="register-heading">Make a seat at the desk.</h2>
             </div>
             <p className="board-section__note">
-              Your account gets a fresh inbox and a directory to search for a first conversation.
+              Your account starts with an empty inbox and a searchable directory for your first channel.
             </p>
           </div>
 
@@ -121,7 +121,8 @@ export function RegisterPage() {
                   minLength={8}
                   value={form.password}
                   onChange={update('password')}
-                  placeholder="8+ characters, one uppercase, one number"
+                  aria-describedby="register-password-hint"
+                  placeholder="Choose a password"
                 />
                 <button
                   type="button"
@@ -135,6 +136,9 @@ export function RegisterPage() {
                     <Eye size={17} aria-hidden="true" />
                   )}
                 </button>
+              </span>
+              <span className="field__hint" id="register-password-hint">
+                At least 8 characters, with upper and lower case, a number, and a symbol.
               </span>
             </div>
 
@@ -160,10 +164,10 @@ export function RegisterPage() {
             <div className="account-form__actions">
               <button type="submit" className="button button--ink" disabled={pending}>
                 {pending && <Loader2 className="spin" size={16} aria-hidden="true" />}
-                {pending ? 'Creating your seat…' : 'Create account'}
+                {pending ? 'Creating your account…' : 'Create account'}
               </button>
               <p>
-                Already have a session?{' '}
+                Already have an account?{' '}
                 <Link to="/login" className="inline-link">
                   Sign in
                 </Link>
@@ -174,10 +178,10 @@ export function RegisterPage() {
           <div className="account-form__note">
             <p className="mono">what the seat includes</p>
             <div className="account-form__facts">
-              <span>live threads</span>
+              <span>live channels</span>
               <span>presence</span>
               <span>saved history</span>
-              <span>direct + group threads</span>
+              <span>direct + group channels</span>
             </div>
             <PrivateWindowNote compact />
           </div>

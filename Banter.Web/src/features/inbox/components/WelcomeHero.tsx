@@ -31,7 +31,7 @@ export function WelcomeHero({
         {firstName(displayName)}.
       </h1>
       <p className="welcome__lede">
-        The desk is open. Pick a channel from the rail, or find someone and open a new wire.
+        The desk is open. Pick a channel from the rail, or find someone and open a new channel.
       </p>
 
       <div className="welcome__actions">
@@ -42,13 +42,13 @@ export function WelcomeHero({
           </Link>
         ) : (
           <Link to="/new" className="button button--ink">
-            Start the first thread
+            Start a channel
             <ArrowRight size={17} aria-hidden="true" />
           </Link>
         )}
         <Link to="/new" className="button button--ghost">
           <MessageSquarePlus size={16} aria-hidden="true" />
-          New thread
+          New channel
         </Link>
       </div>
 

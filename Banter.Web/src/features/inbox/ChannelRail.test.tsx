@@ -58,7 +58,7 @@ describe('Channel rail', () => {
       'aria-current',
       'page',
     );
-    expect(screen.getByRole('link', { name: /Ada, AI teammate/ })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Ada, AI operator/ })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Design Crit, group channel/ })).toBeInTheDocument();
     expect(screen.getByText('3 unread')).toBeInTheDocument();
     expect(screen.getByText('group')).toBeInTheDocument();
@@ -74,7 +74,7 @@ describe('Channel rail', () => {
     renderWithProviders(<ChannelRail />, { route: '/inbox' });
 
     expect(screen.getByRole('status', { name: 'Loading channels' })).toBeInTheDocument();
-    expect(await screen.findByText('Start the first thread.')).toBeInTheDocument();
+    expect(await screen.findByText('Start a channel.')).toBeInTheDocument();
   });
 
   it('shows the empty state and an error state with retry', async () => {
@@ -82,7 +82,7 @@ describe('Channel rail', () => {
       http.get('/api/v1/conversations', () => HttpResponse.json(makeInbox([]))),
     );
     const { unmount } = renderWithProviders(<ChannelRail />, { route: '/inbox' });
-    expect(await screen.findByText('Start the first thread.')).toBeInTheDocument();
+    expect(await screen.findByText('Start a channel.')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Find someone' })).toHaveAttribute('href', '/new');
     unmount();
 
@@ -93,7 +93,7 @@ describe('Channel rail', () => {
     );
     renderWithProviders(<ChannelRail />, { route: '/inbox' });
     const alert = await screen.findByRole('alert');
-    expect(within(alert).getByText('the desk did not load')).toBeInTheDocument();
+    expect(within(alert).getByText('the desk didn’t load')).toBeInTheDocument();
     expect(within(alert).getByText('No signal.')).toBeInTheDocument();
   });
 });

@@ -83,8 +83,8 @@ describe('New conversation page', () => {
     await user.click(results.getByRole('button', { name: /Sara/ }));
 
     const builder = screen.getByRole('complementary');
-    expect(within(builder).getByText('Open a thread with Sara.')).toBeInTheDocument();
-    expect(within(builder).getByRole('button', { name: /Open direct thread/ })).toBeEnabled();
+    expect(within(builder).getByText('Open a channel with Sara.')).toBeInTheDocument();
+    expect(within(builder).getByRole('button', { name: /Open direct channel/ })).toBeEnabled();
 
     await user.clear(search);
     await user.type(search, 'Mo');
@@ -93,7 +93,7 @@ describe('New conversation page', () => {
       within(screen.getByLabelText('Search results')).getByRole('button', { name: /Mohamed/ }),
     );
 
-    expect(within(builder).getByText('Open a thread with Mohamed.')).toBeInTheDocument();
+    expect(within(builder).getByText('Open a channel with Mohamed.')).toBeInTheDocument();
     expect(within(builder).queryByText('Sara')).not.toBeInTheDocument();
   });
 
@@ -103,16 +103,16 @@ describe('New conversation page', () => {
     renderPage();
     const search = screen.getByPlaceholderText('Search by name or email');
 
-    await user.click(screen.getByRole('button', { name: 'Group thread' }));
+    await user.click(screen.getByRole('button', { name: 'Group channel' }));
     await user.type(search, 'Ada');
     await screen.findByLabelText('Search results');
     const groupAda = within(screen.getByLabelText('Search results')).getByRole('button', {
       name: /Ada/,
     });
     expect(groupAda).toBeDisabled();
-    expect(screen.getByText(/DM only/)).toBeInTheDocument();
+    expect(screen.getByText(/Direct only/)).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Direct message' }));
+    await user.click(screen.getByRole('button', { name: 'Direct channel' }));
     const directAda = within(screen.getByLabelText('Search results')).getByRole('button', {
       name: /Ada/,
     });
@@ -121,9 +121,9 @@ describe('New conversation page', () => {
 
     const builder = screen.getByRole('complementary');
     expect(
-      within(builder).getByText('Open a direct thread with Ada, an AI teammate.'),
+      within(builder).getByText('Open a direct channel with Ada, an AI operator.'),
     ).toBeInTheDocument();
-    expect(within(builder).getByRole('button', { name: /Open direct thread/ })).toBeEnabled();
+    expect(within(builder).getByRole('button', { name: /Open direct channel/ })).toBeEnabled();
   });
 
   it('requires two people and a name before creating a group', async () => {
@@ -139,7 +139,7 @@ describe('New conversation page', () => {
     renderPage();
     const search = screen.getByPlaceholderText('Search by name or email');
 
-    await user.click(screen.getByRole('button', { name: 'Group thread' }));
+    await user.click(screen.getByRole('button', { name: 'Group channel' }));
     await user.type(search, 'Sara');
     await screen.findByLabelText('Search results');
     const results = within(screen.getByLabelText('Search results'));
@@ -147,7 +147,7 @@ describe('New conversation page', () => {
     await user.click(results.getByRole('button', { name: /Mohamed/ }));
 
     const builder = screen.getByRole('complementary');
-    const create = within(builder).getByRole('button', { name: /Create group thread/ });
+    const create = within(builder).getByRole('button', { name: /Create group channel/ });
     expect(create).toBeDisabled();
     expect(within(builder).getByText('Give the group a name to continue.')).toBeInTheDocument();
 
@@ -175,12 +175,12 @@ describe('New conversation page', () => {
     await user.click(
       within(screen.getByLabelText('Search results')).getByRole('button', { name: /Ada/ }),
     );
-    expect(screen.getByRole('complementary')).toHaveTextContent('Open a direct thread with Ada');
+    expect(screen.getByRole('complementary')).toHaveTextContent('Open a direct channel with Ada');
 
-    await user.click(screen.getByRole('button', { name: 'Group thread' }));
+    await user.click(screen.getByRole('button', { name: 'Group channel' }));
     expect(screen.getByRole('complementary')).toHaveTextContent(
       'Search the directory and pick at least two people.',
     );
-    expect(screen.getByRole('complementary')).not.toHaveTextContent('Ada, an AI teammate');
+    expect(screen.getByRole('complementary')).not.toHaveTextContent('Ada, an AI operator');
   });
 });

@@ -31,16 +31,16 @@ export function ThreadBuilder({
   return (
     <aside className="builder" aria-labelledby="builder-title">
       <div className="builder__head">
-        <span className="mono">thread draft</span>
+        <span className="mono">channel draft</span>
         <span className="mono">{mode === 'direct' ? 'direct' : 'group'}</span>
       </div>
 
-      <h2 id="builder-title">{mode === 'direct' ? 'A direct wire.' : 'A group wire.'}</h2>
+      <h2 id="builder-title">{mode === 'direct' ? 'A direct channel.' : 'A group channel.'}</h2>
 
       {selected.length === 0 ? (
         <p className="builder__empty">
           {mode === 'direct'
-            ? 'Search the directory and pick one person or AI teammate.'
+            ? 'Search the directory and pick one person or AI operator.'
             : 'Search the directory and pick at least two people.'}
         </p>
       ) : (
@@ -103,10 +103,10 @@ export function ThreadBuilder({
           <ArrowRight size={16} aria-hidden="true" />
         )}
         {pending
-          ? 'Opening thread…'
+          ? 'Opening channel…'
           : mode === 'direct'
-            ? 'Open direct thread'
-            : 'Create group thread'}
+            ? 'Open direct channel'
+            : 'Create group channel'}
       </button>
     </aside>
   );

@@ -86,7 +86,7 @@ export function PasswordLoginForm({ pending, error, onLogin }: PasswordLoginForm
           <p>
             New here?{' '}
             <Link to="/register" className="inline-link">
-              Create a demo account
+              Create an account
             </Link>
           </p>
           <p className="mono">your session stays in this browser</p>

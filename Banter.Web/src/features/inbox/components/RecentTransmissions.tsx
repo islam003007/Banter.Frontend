@@ -51,7 +51,7 @@ export function RecentTransmissions({
       {isError && (
         <div className="welcome__error" role="alert">
           <div>
-            <p className="mono">the desk did not load</p>
+            <p className="mono">the desk didn’t load</p>
             <p>{errorMessage(error)}</p>
           </div>
           <button type="button" className="text-button" onClick={onRetry}>

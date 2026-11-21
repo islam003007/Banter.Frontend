@@ -5,8 +5,8 @@ export function BotBadge({ className = '' }: { className?: string }) {
     <span
       className={`bot-badge ${className}`.trim()}
       role="img"
-      aria-label="AI teammate"
-      title="AI teammate"
+      aria-label="AI operator"
+      title="AI operator"
     >
       <Sparkles size={9} aria-hidden="true" />
       <span>AI</span>

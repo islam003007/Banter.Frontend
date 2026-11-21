@@ -5,8 +5,8 @@ describe('registration validation', () => {
   const valid = {
     displayName: 'Islam Rafat',
     email: 'islam@example.com',
-    password: 'Password1',
-    passwordConfirm: 'Password1',
+    password: 'Password1!',
+    passwordConfirm: 'Password1!',
   };
 
   it('accepts a complete, strong form', () => {
@@ -38,7 +38,10 @@ describe('registration validation', () => {
     expect(
       validateRegisterForm({ ...valid, password: 'Password', passwordConfirm: 'Password' }),
     ).toBe('Include at least one number.');
-    expect(validateRegisterForm({ ...valid, passwordConfirm: 'Different1' })).toBe(
+    expect(
+      validateRegisterForm({ ...valid, password: 'Password1', passwordConfirm: 'Password1' }),
+    ).toBe('Include at least one symbol.');
+    expect(validateRegisterForm({ ...valid, passwordConfirm: 'Different1!' })).toBe(
       'Passwords do not match.',
     );
   });

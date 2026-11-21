@@ -80,11 +80,11 @@ export function ThreadCard({
       <span className={`welcome-thread__snippet ${hasMessage ? '' : 'is-quiet'}`.trim()}>
         {hasMessage
           ? conversation.lastMessageContent
-          : 'No transmissions yet — open the channel to start it.'}
+          : 'No messages yet — open the channel to send the first message.'}
       </span>
       <span className="welcome-thread__foot mono">
         <span>
-          channel {channel} · {hasMessage ? 'latest transmission' : 'quiet channel'}
+          channel {channel} · {hasMessage ? 'latest message' : 'quiet channel'}
         </span>
         <span className="welcome-thread__open">
           <span className="welcome-thread__wave" aria-hidden="true">

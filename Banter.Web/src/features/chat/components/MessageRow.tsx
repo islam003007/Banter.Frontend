@@ -45,7 +45,7 @@ export function MessageRow({
   return (
     <article
       className={`message message--theirs ${continuation ? 'is-continuation' : ''}`.trim()}
-      aria-label={`${message.displayName}${isBot ? ', AI teammate' : ''} at ${time}`}
+      aria-label={`${message.displayName}${isBot ? ', AI operator' : ''} at ${time}`}
     >
       <div className="message__avatar">
         {!continuation && (

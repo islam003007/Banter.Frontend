@@ -104,7 +104,7 @@ export function MePage() {
           <p className="mono">a note on this demo</p>
           <h2>A room built to be shared.</h2>
           <p>
-            This is a shared demo workspace. Messages are delivered to everyone in a thread, and
+            This is a shared demo workspace. Messages are delivered to everyone in a channel, and
             the resident cast is here so the room never starts empty.
           </p>
           <PrivateWindowNote />

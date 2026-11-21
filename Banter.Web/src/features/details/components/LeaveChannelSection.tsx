@@ -40,7 +40,7 @@ export function LeaveChannelSection({
               onClick={() => setConfirmingLeave(true)}
             >
               <LogOut size={16} aria-hidden="true" />
-              Leave conversation
+              Leave channel
             </button>
           ) : (
             <div className="leave-confirm">

@@ -32,14 +32,14 @@ export function DemoRoster({
           <h2 id="demo-heading">Choose a seat.</h2>
         </div>
         <p className="board-section__note">
-          Six people already have conversations here. Pick one and the inbox opens with their
+          Six people are already in the room. Pick a seat and the inbox opens with their
           history.
         </p>
       </div>
 
       <div className="demo-board" aria-live="polite">
         {isPending && (
-          <div className="demo-loading" role="status" aria-label="Loading demo sessions">
+          <div className="demo-loading" role="status" aria-label="Loading demo seats">
             {Array.from({ length: 6 }).map((_, index) => (
               <span className="demo-loading__tile" key={index} />
             ))}

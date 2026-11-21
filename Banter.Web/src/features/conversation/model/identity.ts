@@ -31,11 +31,11 @@ export function resolveConversationIdentity({
     (participant) => participant.userId !== currentUserId,
   );
   const title = isGroup
-    ? detail?.title || fallback?.displayName || 'Group thread'
+    ? detail?.title || fallback?.displayName || 'Group channel'
     : otherParticipant?.displayName ||
       fallback?.displayName ||
       detail?.displayName ||
-      'Conversation';
+      'Channel';
   const online = otherParticipant?.isOnline ?? fallback?.isOnline ?? false;
   const onlineCount = participants.filter(
     (participant) =>
@@ -73,8 +73,8 @@ export function channelDetail(
       identity.onlineCount > 0 ? ` · ${identity.onlineCount} online` : ''
     }`;
   }
-  if (identity.isBotConversation) return 'AI operator · direct wire';
-  return identity.online ? 'direct wire · online' : 'direct wire · away';
+  if (identity.isBotConversation) return 'AI operator · direct channel';
+  return identity.online ? 'direct channel · online' : 'direct channel · away';
 }
 
 export function useConversationIdentity(

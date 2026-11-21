@@ -57,7 +57,7 @@ test.describe('night signal smoke', () => {
     await expect(result).toBeVisible();
     await result.click();
 
-    const openDirect = page.getByRole('button', { name: 'Open direct thread' });
+    const openDirect = page.getByRole('button', { name: 'Open direct channel' });
     await expect(openDirect).toBeEnabled();
     await openDirect.click();
 

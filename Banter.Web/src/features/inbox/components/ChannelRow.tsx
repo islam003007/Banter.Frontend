@@ -29,7 +29,7 @@ export function ChannelRow({
       onClick={onNavigate}
       aria-current={active ? 'page' : undefined}
       aria-label={`${conversation.displayName}${conversation.isGroup ? ', group channel' : ''}${
-        isBot ? ', AI teammate' : ''
+        isBot ? ', AI operator' : ''
       }${unread > 0 ? `, ${unread} unread` : ''}${
         !isBot && conversation.isOnline ? ', online' : ''
       }`}
@@ -80,7 +80,7 @@ export function ChannelRow({
         </span>
         <span className="conversation__bottom">
           <span className={`conversation__snippet ${hasMessage ? '' : 'is-quiet'}`.trim()}>
-            {hasMessage ? conversation.lastMessageContent : 'No transmissions yet'}
+            {hasMessage ? conversation.lastMessageContent : 'No messages yet'}
           </span>
           {unread > 0 ? (
             <span className="unread-count" aria-label={`${unread} unread`}>

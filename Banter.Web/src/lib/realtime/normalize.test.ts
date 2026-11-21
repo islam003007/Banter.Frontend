@@ -45,7 +45,7 @@ describe('realtime normalization', () => {
     });
     expect(normalizeBotTyping('c1')).toEqual({
       conversationId: 'c1',
-      botName: 'AI teammate',
+      botName: 'AI operator',
       active: true,
     });
     expect(

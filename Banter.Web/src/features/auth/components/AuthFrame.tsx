@@ -31,12 +31,12 @@ export function AuthFrame({
       </header>
 
       <section className="board__hero" aria-label="Banter">
-        <p className="board__kicker mono">live conversation desk / six demo seats</p>
+        <p className="board__kicker mono">live channel desk / six demo seats</p>
         <h1 className="board__statement">
           The room is <span>already talking.</span>
         </h1>
         <p className="board__copy">
-          A live conversation desk with presence you can feel, threads that keep their place, and a
+          A live channel desk with presence you can feel, channels that keep their place, and a
           room that is already talking.
         </p>
 
@@ -73,8 +73,8 @@ export function AuthFrame({
           </p>
         )}
         <div className="board__tech mono" aria-label="Workspace features">
-          <span>live threads</span>
-          <span>group rooms</span>
+          <span>live channels</span>
+          <span>group channels</span>
           <span>presence</span>
           <span>history</span>
         </div>

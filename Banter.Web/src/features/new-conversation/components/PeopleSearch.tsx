@@ -58,7 +58,7 @@ export function PeopleSearch({
 
       <p className="search-field__hint mono">
         {mode === 'direct'
-          ? 'pick one person or AI teammate to open a direct thread'
+          ? 'pick one person or AI operator to open a direct channel'
           : 'pick two or more people, then name the group'}
       </p>
 
@@ -83,7 +83,7 @@ export function PeopleSearch({
       {showInitialHint && (
         <p className="search-bots-note mono">
           <BotBadge />
-          <span>{BOT_NAMES} are AI teammates. They answer in direct threads.</span>
+          <span>{BOT_NAMES} are AI operators. They answer in direct channels.</span>
         </p>
       )}
 

@@ -68,7 +68,7 @@ export function ChannelRail() {
           <span className="new-thread-button__icon">
             <MessageSquarePlus size={17} aria-hidden="true" />
           </span>
-          <span>New thread</span>
+          <span>New channel</span>
           <span className="new-thread-button__hint mono" aria-hidden="true">
             <Radio size={12} />
           </span>
@@ -96,7 +96,7 @@ export function ChannelRail() {
 
         {inbox.isError && (
           <div className="rail__error" role="alert">
-            <p className="mono">the desk did not load</p>
+            <p className="mono">the desk didn’t load</p>
             <p>{errorMessage(inbox.error)}</p>
             <button type="button" className="text-button" onClick={() => void inbox.refetch()}>
               Try again
@@ -107,8 +107,8 @@ export function ChannelRail() {
         {inbox.isSuccess && conversations.length === 0 && (
           <div className="rail__empty">
             <p className="mono">no channels yet</p>
-            <h3>Start the first thread.</h3>
-            <p>Search for a person and open a direct message, or gather a few people into a group.</p>
+            <h3>Start a channel.</h3>
+            <p>Search for a person and open a direct channel, or gather a few people into a group.</p>
             <Link to="/new" className="button button--primary button--small" onClick={closeDrawer}>
               Find someone
             </Link>

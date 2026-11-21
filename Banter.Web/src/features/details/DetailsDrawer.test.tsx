@@ -86,7 +86,7 @@ describe('Details drawer', () => {
     expect(await within(dialog).findByText('Mohamed')).toBeInTheDocument();
     expect(within(dialog).getByText('Ahmed')).toBeInTheDocument();
     expect(within(dialog).getByText('you')).toBeInTheDocument();
-    expect(within(dialog).getByRole('img', { name: 'AI teammate' })).toBeInTheDocument();
+    expect(within(dialog).getByRole('img', { name: 'AI operator' })).toBeInTheDocument();
 
     await user.keyboard('{Escape}');
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -123,7 +123,7 @@ describe('Details drawer', () => {
     renderDrawer({ onClose });
 
     const dialog = await screen.findByRole('dialog', { name: 'Design Crit' });
-    await user.click(within(dialog).getByRole('button', { name: /Leave conversation/ }));
+    await user.click(within(dialog).getByRole('button', { name: /Leave channel/ }));
     expect(
       within(dialog).getByText(/Leave “Design Crit”\? The channel disappears from your inbox/),
     ).toBeInTheDocument();
@@ -156,7 +156,7 @@ describe('Details drawer', () => {
       within(dialog).getByText(/Leave is only available for group channels/),
     ).toBeInTheDocument();
     expect(
-      within(dialog).queryByRole('button', { name: /Leave conversation/ }),
+      within(dialog).queryByRole('button', { name: /Leave channel/ }),
     ).not.toBeInTheDocument();
   });
 });

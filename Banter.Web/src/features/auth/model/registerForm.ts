@@ -23,6 +23,7 @@ export function validateRegisterForm(form: RegisterFormState): string | null {
   if (!/[A-Z]/.test(form.password)) return 'Include at least one uppercase letter.';
   if (!/[a-z]/.test(form.password)) return 'Include at least one lowercase letter.';
   if (!/[0-9]/.test(form.password)) return 'Include at least one number.';
+  if (!/[^A-Za-z0-9]/.test(form.password)) return 'Include at least one symbol.';
   if (form.password !== form.passwordConfirm) return 'Passwords do not match.';
   return null;
 }

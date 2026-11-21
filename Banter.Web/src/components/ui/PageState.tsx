@@ -19,7 +19,7 @@ export function LoadingRows({ count = 5 }: { count?: number }) {
 }
 
 export function ErrorState({
-  title = 'This part of the desk did not load.',
+  title = 'This part of the desk didn’t load.',
   message,
   onRetry,
   backTo,

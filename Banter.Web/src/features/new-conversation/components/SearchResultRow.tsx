@@ -27,7 +27,7 @@ export function SearchResultRow({
       disabled={unavailable}
       title={
         unavailable
-          ? `${result.displayName} is an AI teammate and joins direct threads only`
+          ? `${result.displayName} is an AI operator and joins direct channels only`
           : undefined
       }
       onClick={onSelect}
@@ -47,8 +47,8 @@ export function SearchResultRow({
           {isBot && <BotBadge />}
         </span>
         <span className={isBot ? 'search-result__persona' : 'search-result__email'}>
-          {isBot ? persona ?? 'AI teammate' : result.email}
-          {unavailable && <span className="search-result__limit"> · DM only</span>}
+          {isBot ? persona ?? 'AI operator' : result.email}
+          {unavailable && <span className="search-result__limit"> · Direct only</span>}
         </span>
       </span>
       <span className="search-result__check" aria-hidden="true">

@@ -92,7 +92,7 @@ describe('auth guards', () => {
     };
     render(protectedRoutes());
 
-    expect(screen.getByText('the desk did not answer')).toBeInTheDocument();
+    expect(screen.getByText('the desk didn’t answer')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /Try again/ }));
     expect(refreshSession).toHaveBeenCalledTimes(1);
   });

@@ -100,8 +100,8 @@ export function Composer({
             onKeyDown={handleKeyDown}
             rows={1}
             maxLength={MESSAGE_LIMIT}
-            placeholder={`Write to ${title || 'the thread'}`}
-            aria-label={`Message ${title || 'the thread'}`}
+            placeholder={`Write to ${title || 'this channel'}`}
+            aria-label={`Message ${title || 'this channel'}`}
             aria-describedby="composer-hint"
             disabled={inputDisabled}
           />

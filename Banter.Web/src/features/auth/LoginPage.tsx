@@ -93,8 +93,7 @@ export function LoginPage() {
               <h2 id="email-heading">Or use your own email.</h2>
             </div>
             <p className="board-section__note">
-              The roster is faster, but a real account works here too. New seats are created in
-              seconds.
+              The demo roster is the quickest way in. You can also sign in with email below.
             </p>
           </div>
 

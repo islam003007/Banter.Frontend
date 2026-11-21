@@ -59,7 +59,7 @@ export function NewConversationPage() {
         mode === 'group' ? groupTitle.trim() : null,
       );
       if (!conversationId) {
-        setError('The thread was created, but we could not open it. Check your inbox and try again.');
+        setError('The channel was created, but we couldn’t open it. Check your inbox and try again.');
         return;
       }
       await queryClient.invalidateQueries({ queryKey: queryKeys.inbox });
@@ -84,11 +84,11 @@ export function NewConversationPage() {
           <ArrowLeft size={15} aria-hidden="true" />
           Channels
         </button>
-        <p className="mono page__kicker">start a thread</p>
+        <p className="mono page__kicker">start a channel</p>
         <h1 id="new-thread-title">Find your people.</h1>
         <p className="page__lede">
-          Search the directory, choose a direct message or gather a group. A new thread lands in
-          the rail as soon as it exists, even before the first message.
+          Search the directory, choose a direct or group channel, and it appears in the rail as
+          soon as it is created, even before the first message.
         </p>
       </header>
 

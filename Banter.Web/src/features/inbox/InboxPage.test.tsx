@@ -74,7 +74,7 @@ describe('Inbox page', () => {
     expect(ada.compareDocumentPosition(group) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     expect(screen.getByText('group channel')).toBeInTheDocument();
-    expect(screen.getAllByRole('img', { name: 'AI teammate' }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('img', { name: 'AI operator' }).length).toBeGreaterThan(0);
     expect(screen.getByRole('link', { name: 'Open your channel with Ada' })).toHaveAttribute(
       'href',
       '/c/conv-ada',
@@ -113,7 +113,7 @@ describe('Inbox page', () => {
     renderWithProviders(<InboxPage />, { route: '/inbox' });
 
     const alert = await screen.findByRole('alert');
-    expect(within(alert).getByText('the desk did not load')).toBeInTheDocument();
+    expect(within(alert).getByText('the desk didn’t load')).toBeInTheDocument();
     expect(within(alert).getByText('The database is offline.')).toBeInTheDocument();
     expect(within(alert).getByRole('button', { name: 'Try again' })).toBeInTheDocument();
   });

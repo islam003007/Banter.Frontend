@@ -40,12 +40,12 @@ export function ParticipantsSection({
 
       {status === 'error' && (
         <p className="details-error">
-          Participants could not be loaded. {errorMessage(error)}
+          We couldn’t load the people in this channel. {errorMessage(error)}
         </p>
       )}
 
       {detailLoaded && participants.length === 0 && (
-        <p className="details-muted">The people in this thread are not available right now.</p>
+        <p className="details-muted">No one is listed in this channel right now.</p>
       )}
 
       {participants.length > 0 && (

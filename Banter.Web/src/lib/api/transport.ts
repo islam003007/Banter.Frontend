@@ -18,7 +18,7 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
     throw new ApiError(
       0,
       'Network unavailable',
-      'Banter did not answer. Check your connection and try again.',
+      'Banter didn’t answer. Check your connection and try again.',
     );
   }
 
@@ -43,7 +43,7 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
     throw new ApiError(
       response.status,
       'Unexpected response',
-      'The desk returned something the app could not read.',
+      'We couldn’t read the response. Try again.',
     );
   }
 }

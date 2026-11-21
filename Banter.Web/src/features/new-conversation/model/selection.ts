@@ -3,7 +3,7 @@ import { botPersona, resolveIsBot } from '../../../lib/bots';
 
 export type Mode = 'direct' | 'group';
 
-export const BOT_GROUP_ERROR = 'AI teammates join direct threads only.';
+export const BOT_GROUP_ERROR = 'AI operators can only join direct channels.';
 
 export function dedupeUsers(results: UserSearchResult[]): UserSearchResult[] {
   const seen = new Set<string>();
@@ -66,11 +66,11 @@ export function builderHint(
   groupTitle: string,
 ): string {
   if (mode === 'direct') {
-    if (selected.length !== 1) return 'One person is enough for a direct thread.';
+    if (selected.length !== 1) return 'One person is enough for a direct channel.';
     const isBot = resolveIsBot(selected[0].isBot, selected[0].displayName);
     return isBot
-      ? `Open a direct thread with ${selected[0].displayName}, an AI teammate.`
-      : `Open a thread with ${selected[0].displayName}.`;
+      ? `Open a direct channel with ${selected[0].displayName}, an AI operator.`
+      : `Open a channel with ${selected[0].displayName}.`;
   }
   if (selected.length < 2) return 'A group needs at least two other people.';
   if (groupTitle.trim()) return `Create “${groupTitle.trim()}” with ${selected.length} people.`;
