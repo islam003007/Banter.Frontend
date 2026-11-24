@@ -9,7 +9,7 @@ const STATE_LABELS = {
   disconnected: 'offline',
 } as const;
 
-const WAVE_HEIGHTS = [26, 46, 72, 38, 88, 58, 34, 66, 92, 48, 28, 54, 78, 42, 64, 30];
+const WAVE_BARS = 16;
 
 /**
  * The thin transmission band that sits at the top of the main pane.
@@ -50,11 +50,8 @@ export function TransmissionBand({
       {detail && <span className="transmission__detail mono">{detail}</span>}
 
       <span className="transmission__wave" aria-hidden="true">
-        {WAVE_HEIGHTS.map((height, index) => (
-          <span
-            key={`${height}-${index}`}
-            style={{ height: `${height}%`, animationDelay: `${index * 90}ms` }}
-          />
+        {Array.from({ length: WAVE_BARS }, (_, index) => (
+          <span key={index} />
         ))}
       </span>
     </div>

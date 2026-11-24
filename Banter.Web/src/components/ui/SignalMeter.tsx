@@ -1,6 +1,6 @@
 import type { RealtimeState } from '../../lib/api/contracts';
 
-const METER_HEIGHTS = [34, 58, 82, 100, 64, 46];
+const MAX_BARS = 6;
 
 /**
  * A compact, decorative signal-strength meter. The visible connection label
@@ -15,18 +15,15 @@ export function SignalMeter({
   bars?: number;
   className?: string;
 }) {
-  const heights = METER_HEIGHTS.slice(0, Math.max(1, Math.min(bars, METER_HEIGHTS.length)));
+  const count = Math.max(1, Math.min(bars, MAX_BARS));
 
   return (
     <span
       className={`signal-meter signal-meter--${state} ${className}`.trim()}
       aria-hidden="true"
     >
-      {heights.map((height, index) => (
-        <span
-          key={height + index}
-          style={{ height: `${height}%`, animationDelay: `${index * 120}ms` }}
-        />
+      {Array.from({ length: count }, (_, index) => (
+        <span key={index} />
       ))}
     </span>
   );

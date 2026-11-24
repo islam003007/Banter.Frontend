@@ -1,7 +1,7 @@
 # Banter Frontend
 
-The **Banter** demo client: React 19 + TypeScript + Vite, TanStack Query and SignalR, styled as a
-Night Signal channel desk. The API lives in a separate repository:
+The **Banter** demo client: React 19 + TypeScript + Vite, TanStack Query and SignalR, with a dark
+channel workspace UI. The API lives in a separate repository:
 [islam003007/Banter](https://github.com/islam003007/Banter).
 
 ## Run
@@ -31,7 +31,6 @@ VITE_API_TARGET=http://localhost:5261 npm run dev
 
 See `Banter.Web/README.md` for the realtime flow, build notes and production setup.
 
-## Tags
+## Design history
 
-The Night Signal design milestones are preserved as tags: `night-signal-v1`, `channel-desk-v1` and
-`banter-final-look`.
+Earlier design milestones are preserved as git tags.

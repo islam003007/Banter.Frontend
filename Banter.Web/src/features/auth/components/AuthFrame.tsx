@@ -22,7 +22,7 @@ export function AuthFrame({
       <header className="board__masthead">
         <Wordmark size="large" className="board__wordmark" />
         <div className="board__masthead-meta mono">
-          <span>night signal / 2026</span>
+          <span>banter / 2026</span>
           <span className="board__signal-state">
             <span className="board__signal-state-dot" aria-hidden="true" />
             signal open
@@ -31,13 +31,13 @@ export function AuthFrame({
       </header>
 
       <section className="board__hero" aria-label="Banter">
-        <p className="board__kicker mono">live channel desk / six demo seats</p>
+        <p className="board__kicker mono">live channels / six demo seats</p>
         <h1 className="board__statement">
           The room is <span>already talking.</span>
         </h1>
         <p className="board__copy">
-          A live channel desk with presence you can feel, channels that keep their place, and a
-          room that is already talking.
+          A live channel workspace with presence you can feel, channels that keep their place, and
+          a room that is already talking.
         </p>
 
         <div className="board__signal" aria-hidden="true">

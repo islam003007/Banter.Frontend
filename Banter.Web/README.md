@@ -3,13 +3,12 @@
 A portfolio demo client for the Banter chat API. React 19, TypeScript, Vite, TanStack Query,
 React Router, and SignalR. The UI is custom CSS — no component library, no Tailwind.
 
-The interface is **Night Signal / channel desk**: a near-black charcoal-green canvas, a channel
-rail and reading pane on desktop, and a focus-managed channel drawer on mobile. Signal green and
-mint carry brand, presence, active channels, and outbound messages; amber marks unread counts,
-bot typing, and transient attention; ice blue carries links and focus. Manrope sets display and
-body type, IBM Plex Mono carries metadata and channel indices. The UI is built around the
-channel-desk metaphor: numbered channels, transmission bands, uplink metadata, a live signal
-meter, and an AI operator roster.
+The interface uses a near-black charcoal-green canvas, a channel rail and reading pane on desktop,
+and a focus-managed channel drawer on mobile. Green and mint carry brand, presence, active
+channels, and outbound messages; amber marks unread counts, bot typing, and transient attention;
+ice blue carries links and focus. Manrope sets display and body type, IBM Plex Mono carries
+metadata and channel indices. The UI is built around a live-channel metaphor: numbered channels,
+transmission bands, uplink metadata, a live signal meter, and an AI operator roster.
 
 ## Structure
 
@@ -17,7 +16,7 @@ meter, and an AI operator roster.
 | --- | --- |
 | `src/app/` | Providers, query client, routes, render error boundary |
 | `src/features/auth/` | Session provider, route guards, login/register pages and forms |
-| `src/features/inbox/` | Channel desk, channel rail, recent transmissions, AI operators |
+| `src/features/inbox/` | Welcome pane, channel rail, recent transmissions, AI operators |
 | `src/features/conversation/` | Shared inbox/detail queries and conversation identity helpers |
 | `src/features/chat/` | Chat page, message timeline, composer, send/read/scroll/typing hooks |
 | `src/features/new-conversation/` | Debounced directory search, direct/group builder |
@@ -171,12 +170,12 @@ part of this frontend.
 | --- | --- |
 | `/login` | One-click demo roster, standard email/password sign-in, private-window note |
 | `/register` | Secondary account form; auto signs in on success |
-| `/inbox` | Channel rail with unread counts, presence, last message, AI roster; night-desk welcome pane |
+| `/inbox` | Channel rail with unread counts, presence, last message, AI roster; welcome pane |
 | `/c/:conversationId` | Cursor-paginated history, older-page loading with scroll anchoring, optimistic send, mark-read, details drawer, leave |
 | `/new` | Debounced user search with cursor paging, direct-message and group builder |
 | `/me` | Session sheet, connection state, logout |
 
-On mobile, `/inbox` is the full night-desk welcome, chat is the primary screen, and the rail is a
+On mobile, `/inbox` is the full welcome workspace, chat is the primary screen, and the rail is a
 focus-managed drawer. The realtime state is shown as `live`, `linking`, `reconnecting`, or
 `offline`, with a manual retry when the socket stops. A render error is caught by the app error
 boundary instead of leaving a blank page.

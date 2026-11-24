@@ -47,7 +47,7 @@ describe('application routes', () => {
     renderWithProviders(<AppRoutes />, { route: '/me' });
 
     expect(await screen.findByRole('heading', { name: 'Ahmed' })).toBeInTheDocument();
-    expect(screen.getByText('seated at the night desk')).toBeInTheDocument();
+    expect(screen.getByText('seated in Banter')).toBeInTheDocument();
   });
 
   it('renders the not-found page inside the protected workspace', async () => {

@@ -8,7 +8,7 @@ export function SplashScreen() {
         <div className="splash__rule" aria-hidden="true">
           <span />
         </div>
-        <p className="mono">opening the night desk</p>
+        <p className="mono">opening Banter</p>
       </div>
     </div>
   );

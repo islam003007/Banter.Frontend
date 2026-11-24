@@ -54,7 +54,7 @@ export function ChannelRail() {
         <div className="rail__desk">
           <span className="rail__desk-name">
             <span className={`rail__desk-pip is-${realtimeState}`} aria-hidden="true" />
-            Night desk
+            Banter
           </span>
           <span className="rail__desk-meter">
             <SignalMeter state={realtimeState} bars={5} />

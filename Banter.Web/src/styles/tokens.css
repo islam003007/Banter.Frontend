@@ -1,12 +1,12 @@
 :root {
   color-scheme: dark;
 
-  /* Night Signal canvas — charcoal with a green undertone */
+  /* Canvas — charcoal with a green undertone */
   --night: #080d0f;
   --night-deep: #05090a;
   --night-soft: #0b1416;
 
-  /* Channel desk surfaces */
+  /* Channel surfaces */
   --rail: #0d1719;
   --rail-deep: #0a1113;
   --surface: #111f22;

@@ -1,0 +1,43 @@
+/* Shared page shell */
+
+.page {
+  height: 100%;
+  overflow-y: auto;
+  padding: clamp(26px, 3.6vw, 48px) var(--page-gutter) 52px;
+  background:
+    radial-gradient(900px 600px at 82% -10%, rgba(31, 169, 113, 0.04), transparent 60%),
+    var(--night);
+}
+
+.page__header {
+  max-width: 1180px;
+  margin: 0 auto clamp(24px, 3vh, 34px);
+}
+
+.page__header h1 {
+  margin-top: 8px;
+  font-size: clamp(2.5rem, 4.6vw, 4.2rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.page__kicker {
+  color: var(--ice);
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.page__lede {
+  max-width: 64ch;
+  margin-top: 13px;
+  color: var(--sage);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.page__mobile-menu {
+  display: none;
+  margin-bottom: 16px;
+}

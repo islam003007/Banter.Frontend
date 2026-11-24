@@ -52,7 +52,7 @@ export function MePage() {
             <Monogram name={user.displayName} src={user.profilePictureUrl} size="xl" />
             <div>
               <h1 id="session-title">{user.displayName}</h1>
-              <p className="mono">seated at the night desk</p>
+              <p className="mono">seated in Banter</p>
             </div>
           </div>
 

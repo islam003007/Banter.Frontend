@@ -10,6 +10,11 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/auth.css';
 import './styles/workspace.css';
+import './styles/welcome.css';
+import './styles/page.css';
+import './styles/new-thread.css';
+import './styles/session.css';
+import './styles/responsive.css';
 import './styles/chat.css';
 
 createRoot(document.getElementById('root')!).render(

@@ -23,7 +23,7 @@ export function InboxPage() {
   return (
     <section className="welcome" aria-labelledby="welcome-heading">
       <TransmissionBand
-        context="night desk"
+        context="banter"
         detail={
           inbox.isSuccess
             ? `${conversations.length} channels${
@@ -36,7 +36,7 @@ export function InboxPage() {
 
       <div className="welcome__top">
         <p className="welcome__kicker mono">
-          night desk <span aria-hidden="true">/</span> live channel desk
+          banter <span aria-hidden="true">/</span> live channels
         </p>
         <div className="welcome__top-right">
           <button
@@ -83,7 +83,7 @@ export function InboxPage() {
 
       <footer className="welcome__footer mono">
         <span>banter / demo workspace</span>
-        <span>channel desk · new transmissions arrive live</span>
+        <span>channels · new messages arrive live</span>
       </footer>
     </section>
   );

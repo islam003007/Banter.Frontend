@@ -722,6 +722,10 @@ svg {
     var(--night);
 }
 
+.splash--route {
+  min-height: 100%;
+}
+
 .splash__inner {
   display: flex;
   flex-direction: column;
@@ -898,6 +902,36 @@ svg {
   transform-origin: bottom;
 }
 
+.signal-meter > span:nth-child(1) {
+  height: 34%;
+  animation-delay: 0ms;
+}
+
+.signal-meter > span:nth-child(2) {
+  height: 58%;
+  animation-delay: 120ms;
+}
+
+.signal-meter > span:nth-child(3) {
+  height: 82%;
+  animation-delay: 240ms;
+}
+
+.signal-meter > span:nth-child(4) {
+  height: 100%;
+  animation-delay: 360ms;
+}
+
+.signal-meter > span:nth-child(5) {
+  height: 64%;
+  animation-delay: 480ms;
+}
+
+.signal-meter > span:nth-child(6) {
+  height: 46%;
+  animation-delay: 600ms;
+}
+
 .signal-meter--connected {
   color: var(--mint);
 }
@@ -1009,6 +1043,86 @@ svg {
   background: currentColor;
   transform-origin: center;
   animation: transmission-tick 2.8s ease-in-out infinite;
+}
+
+.transmission__wave > span:nth-child(1) {
+  height: 26%;
+  animation-delay: 0ms;
+}
+
+.transmission__wave > span:nth-child(2) {
+  height: 46%;
+  animation-delay: 90ms;
+}
+
+.transmission__wave > span:nth-child(3) {
+  height: 72%;
+  animation-delay: 180ms;
+}
+
+.transmission__wave > span:nth-child(4) {
+  height: 38%;
+  animation-delay: 270ms;
+}
+
+.transmission__wave > span:nth-child(5) {
+  height: 88%;
+  animation-delay: 360ms;
+}
+
+.transmission__wave > span:nth-child(6) {
+  height: 58%;
+  animation-delay: 450ms;
+}
+
+.transmission__wave > span:nth-child(7) {
+  height: 34%;
+  animation-delay: 540ms;
+}
+
+.transmission__wave > span:nth-child(8) {
+  height: 66%;
+  animation-delay: 630ms;
+}
+
+.transmission__wave > span:nth-child(9) {
+  height: 92%;
+  animation-delay: 720ms;
+}
+
+.transmission__wave > span:nth-child(10) {
+  height: 48%;
+  animation-delay: 810ms;
+}
+
+.transmission__wave > span:nth-child(11) {
+  height: 28%;
+  animation-delay: 900ms;
+}
+
+.transmission__wave > span:nth-child(12) {
+  height: 54%;
+  animation-delay: 990ms;
+}
+
+.transmission__wave > span:nth-child(13) {
+  height: 78%;
+  animation-delay: 1080ms;
+}
+
+.transmission__wave > span:nth-child(14) {
+  height: 42%;
+  animation-delay: 1170ms;
+}
+
+.transmission__wave > span:nth-child(15) {
+  height: 64%;
+  animation-delay: 1260ms;
+}
+
+.transmission__wave > span:nth-child(16) {
+  height: 30%;
+  animation-delay: 1350ms;
 }
 
 .transmission--connected .transmission__wave {

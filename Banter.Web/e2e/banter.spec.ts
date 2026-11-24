@@ -7,7 +7,7 @@ async function loginAsAhmed(page: Page) {
   await expect(page.getByRole('heading', { name: 'Ahmed.' })).toBeVisible();
 }
 
-test.describe('night signal smoke', () => {
+test.describe('banter smoke', () => {
   test('signs in through the demo roster and opens the inbox', async ({ page }) => {
     await loginAsAhmed(page);
 
