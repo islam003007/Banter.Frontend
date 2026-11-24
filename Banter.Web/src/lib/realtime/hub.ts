@@ -1,6 +1,8 @@
 import { HubConnectionBuilder, LogLevel, type IRetryPolicy } from '@microsoft/signalr';
 
-export const HUB_URL = '/hubs/chat';
+const hubUrl = import.meta.env.VITE_HUB_URL?.trim();
+
+export const HUB_URL = hubUrl && hubUrl.length > 0 ? hubUrl : '/hubs/chat';
 export const HEARTBEAT_INTERVAL_MS = 25_000;
 export const HEARTBEAT_METHOD = 'Heartbeat';
 

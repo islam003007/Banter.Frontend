@@ -33,6 +33,18 @@ meter, and an AI operator roster.
 Page components stay thin: data lives in feature hooks, cache math lives in pure functions, and
 presentational components receive plain props.
 
+## Production API and hub URLs
+
+Local development keeps the Vite proxy defaults. For a deployed build, set:
+
+```env
+VITE_API_BASE_URL=https://api.example.com
+VITE_HUB_URL=https://api.example.com/hubs/chat
+```
+
+`VITE_API_BASE_URL` is the API origin only. The client appends `/api/v1`.
+When both are unset, the client uses `/api/v1` and `/hubs/chat`.
+
 ## Run it
 
 Prerequisites:

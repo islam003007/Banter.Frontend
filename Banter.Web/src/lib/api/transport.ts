@@ -1,6 +1,8 @@
 import { ApiError, readProblem } from './errors';
 
-export const API_PREFIX = '/api/v1';
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim().replace(/\/+$/, '') ?? '';
+
+export const API_PREFIX = `${apiBaseUrl}/api/v1`;
 
 export async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   let response: Response;
