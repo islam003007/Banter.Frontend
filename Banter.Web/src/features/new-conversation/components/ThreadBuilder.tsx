@@ -1,6 +1,6 @@
 import { ArrowRight, Loader2, X } from 'lucide-react';
 import type { UserSearchResult } from '../../../lib/api/contracts';
-import { resolveIsBot } from '../../../lib/bots';
+import { BOTS_ENABLED, resolveIsBot } from '../../../lib/bots';
 import { BotBadge } from '../../../components/ui/BotBadge';
 import { Monogram } from '../../../components/ui/Monogram';
 import { builderHint, type Mode } from '../model/selection';
@@ -40,7 +40,9 @@ export function ThreadBuilder({
       {selected.length === 0 ? (
         <p className="builder__empty">
           {mode === 'direct'
-            ? 'Search the directory and pick one person or AI operator.'
+            ? BOTS_ENABLED
+              ? 'Search the directory and pick one person or AI operator.'
+              : 'Search the directory and pick one person.'
             : 'Search the directory and pick at least two people.'}
         </p>
       ) : (

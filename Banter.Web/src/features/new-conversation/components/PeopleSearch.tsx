@@ -2,7 +2,7 @@ import { Loader2, Search } from 'lucide-react';
 import type { InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query';
 import type { UserSearchPage, UserSearchResult } from '../../../lib/api/contracts';
 import { errorMessage } from '../../../lib/api/errors';
-import { BOT_NAMES } from '../../../lib/bots';
+import { BOT_NAMES, BOTS_ENABLED } from '../../../lib/bots';
 import { BotBadge } from '../../../components/ui/BotBadge';
 import { SearchResultRow } from './SearchResultRow';
 import { ModeSwitch } from './ModeSwitch';
@@ -58,7 +58,9 @@ export function PeopleSearch({
 
       <p className="search-field__hint mono">
         {mode === 'direct'
-          ? 'pick one person or AI operator to open a direct channel'
+          ? BOTS_ENABLED
+            ? 'pick one person or AI operator to open a direct channel'
+            : 'pick one person to open a direct channel'
           : 'pick two or more people, then name the group'}
       </p>
 
@@ -80,7 +82,7 @@ export function PeopleSearch({
         </div>
       )}
 
-      {showInitialHint && (
+      {BOTS_ENABLED && showInitialHint && (
         <p className="search-bots-note mono">
           <BotBadge />
           <span>{BOT_NAMES} are AI operators. They answer in direct channels.</span>

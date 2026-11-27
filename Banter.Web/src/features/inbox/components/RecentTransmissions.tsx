@@ -4,6 +4,7 @@ import { errorMessage } from '../../../lib/api/errors';
 import type { InboxConversation } from '../../../lib/api/contracts';
 import { ThreadCard } from './ThreadCard';
 import { ThreadSkeleton } from './ThreadSkeleton';
+import { BOTS_ENABLED } from '../../../lib/bots';
 
 interface RecentTransmissionsProps {
   isPending: boolean;
@@ -67,7 +68,11 @@ export function RecentTransmissions({
           </span>
           <div>
             <h3>No channels on the desk yet.</h3>
-            <p>Open a channel with someone, or visit the AI desk and ask a first question.</p>
+            <p>
+              {BOTS_ENABLED
+                ? 'Open a channel with someone, or visit the AI desk and ask a first question.'
+                : 'Open a channel with someone and start the conversation.'}
+            </p>
           </div>
           <Link to="/new" className="button button--ink button--small">
             Find someone

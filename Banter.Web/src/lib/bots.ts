@@ -1,3 +1,5 @@
+export const BOTS_ENABLED = import.meta.env.VITE_BOTS_ENABLED === 'true';
+
 export interface BotProfile {
   name: string;
   persona: string;

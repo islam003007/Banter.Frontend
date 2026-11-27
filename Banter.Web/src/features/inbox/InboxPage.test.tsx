@@ -3,12 +3,7 @@ import type { ReactNode } from 'react';
 import { http, HttpResponse, delay } from 'msw';
 import { screen, within } from '@testing-library/react';
 import { server } from '../../test/server';
-import {
-  adaConversation,
-  designGroup,
-  makeInbox,
-  mohamedConversation,
-} from '../../test/fixtures';
+import { designGroup, makeInbox, mohamedConversation } from '../../test/fixtures';
 import { renderWithProviders } from '../../test/render';
 import { InboxPage } from './InboxPage';
 
@@ -38,7 +33,6 @@ vi.mock('../../lib/realtime/RealtimeProvider', () => ({
 
 const conversations = [
   { ...mohamedConversation, isOnline: true, unreadCount: 2 },
-  adaConversation,
   designGroup,
 ];
 
@@ -56,7 +50,7 @@ describe('Inbox page', () => {
     expect(await screen.findByText('Mohamed')).toBeInTheDocument();
   });
 
-  it('sorts recent transmissions and surfaces unread, AI, and group badges', async () => {
+  it('sorts recent transmissions and surfaces unread and group badges', async () => {
     server.use(
       http.get('/api/v1/conversations', () => HttpResponse.json(makeInbox(conversations))),
     );
@@ -65,29 +59,20 @@ describe('Inbox page', () => {
     const mohamed = await screen.findByRole('link', {
       name: /channel 01, Mohamed, online now, 2 unread/,
     });
-    const ada = screen.getByRole('link', { name: /channel 02, Ada, AI operator/ });
     const group = screen.getByRole('link', {
-      name: /channel 03, Design Crit, group channel, 1 unread/,
+      name: /channel 02, Design Crit, group channel, 1 unread/,
     });
 
-    expect(mohamed.compareDocumentPosition(ada) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(ada.compareDocumentPosition(group) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(mohamed.compareDocumentPosition(group) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     expect(screen.getByText('group channel')).toBeInTheDocument();
-    expect(screen.getAllByRole('img', { name: 'AI operator' }).length).toBeGreaterThan(0);
-    expect(screen.getByRole('link', { name: 'Open your channel with Ada' })).toHaveAttribute(
-      'href',
-      '/c/conv-ada',
-    );
-    expect(screen.getByRole('link', { name: 'Find Milo to start a direct channel' })).toHaveAttribute(
-      'href',
-      '/new?with=Milo',
-    );
+    expect(screen.queryByText('AI desk / 03 operators')).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /AI operator/ })).not.toBeInTheDocument();
 
     const ledgerStage = screen.getByRole('heading', { name: 'Ahmed.' }).closest('.welcome__stage');
     expect(ledgerStage).not.toBeNull();
-    expect(screen.getAllByText('03').length).toBeGreaterThanOrEqual(2);
-    expect(screen.getAllByText('01').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('02').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('03').length).toBeGreaterThanOrEqual(1);
   });
 
   it('shows the empty desk with a way to find someone', async () => {

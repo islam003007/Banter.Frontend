@@ -9,6 +9,7 @@ import { buildInboxSummary } from './model/inboxSummary';
 import { WelcomeHero } from './components/WelcomeHero';
 import { OperatorDesk } from './components/OperatorDesk';
 import { RecentTransmissions } from './components/RecentTransmissions';
+import { BOTS_ENABLED } from '../../lib/bots';
 
 export function InboxPage() {
   const { user } = useAuth();
@@ -59,7 +60,7 @@ export function InboxPage() {
         </div>
       </div>
 
-      <div className="welcome__hero">
+      <div className={`welcome__hero${BOTS_ENABLED ? '' : ' welcome__hero--solo'}`}>
         <WelcomeHero
           displayName={user?.displayName}
           isPending={inbox.isPending}
@@ -68,7 +69,7 @@ export function InboxPage() {
           liveNow={summary.liveNow}
           latest={summary.latest}
         />
-        <OperatorDesk botThreads={summary.botThreads} />
+        {BOTS_ENABLED && <OperatorDesk botThreads={summary.botThreads} />}
       </div>
 
       <RecentTransmissions

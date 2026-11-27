@@ -83,6 +83,10 @@
   min-width: 0;
 }
 
+.welcome__hero--solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .welcome__stage {
   display: flex;
   flex-direction: column;
