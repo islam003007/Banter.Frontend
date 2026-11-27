@@ -55,6 +55,7 @@ export function ChannelRail() {
           <span className="rail__desk-name">
             <span className={`rail__desk-pip is-${realtimeState}`} aria-hidden="true" />
             Banter
+            <span className="demo-chip rail__demo-chip">demo</span>
           </span>
           <span className="rail__desk-meter">
             <SignalMeter state={realtimeState} bars={5} />

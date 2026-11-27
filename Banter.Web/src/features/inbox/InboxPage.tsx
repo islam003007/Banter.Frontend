@@ -83,7 +83,7 @@ export function InboxPage() {
       />
 
       <footer className="welcome__footer mono">
-        <span>banter / demo workspace</span>
+        <span>demo workspace · sample data only</span>
         <span>channels · new messages arrive live</span>
       </footer>
     </section>

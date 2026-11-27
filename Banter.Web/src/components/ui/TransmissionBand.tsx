@@ -40,6 +40,7 @@ export function TransmissionBand({
       <span className="transmission__context mono">
         <SignalMeter state={state} bars={4} className="transmission__meter" />
         <span>{context}</span>
+        <span className="demo-chip transmission__demo">demo</span>
       </span>
 
       <span className="transmission__status mono">

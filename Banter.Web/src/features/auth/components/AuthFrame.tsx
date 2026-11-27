@@ -20,7 +20,10 @@ export function AuthFrame({
       />
 
       <header className="board__masthead">
-        <Wordmark size="large" className="board__wordmark" />
+        <div className="board__brand-row">
+          <Wordmark size="large" className="board__wordmark" />
+          <span className="demo-pill mono">demo workspace</span>
+        </div>
         <div className="board__masthead-meta mono">
           <span>banter / 2026</span>
           <span className="board__signal-state">
@@ -31,13 +34,16 @@ export function AuthFrame({
       </header>
 
       <section className="board__hero" aria-label="Banter">
-        <p className="board__kicker mono">live channels / six demo seats</p>
+        <p className="board__kicker mono">portfolio demo / sample channels</p>
         <h1 className="board__statement">
           The room is <span>already talking.</span>
         </h1>
         <p className="board__copy">
           A live channel workspace with presence you can feel, channels that keep their place, and
           a room that is already talking.
+        </p>
+        <p className="board__demo-note mono">
+          Sample people · sample messages · no real accounts
         </p>
 
         <div className="board__signal" aria-hidden="true">

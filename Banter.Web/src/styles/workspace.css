@@ -94,6 +94,12 @@
   text-transform: uppercase;
 }
 
+.rail__demo-chip {
+  padding: 1px 4px;
+  font-size: 6px;
+  letter-spacing: 0.1em;
+}
+
 .rail__desk-pip {
   width: 5px;
   height: 5px;

@@ -29,10 +29,10 @@ export function DemoRoster({
       <div className="board-section__head">
         <div>
           <p className="mono board-section__index">01 / demo sessions</p>
-          <h2 id="demo-heading">Choose a seat.</h2>
+          <h2 id="demo-heading">Choose a demo seat.</h2>
         </div>
         <p className="board-section__note">
-          Six people are already in the room. Pick a seat and the inbox opens with their
+          Six sample people are already in the room. Pick a seat and the inbox opens with their
           history.
         </p>
       </div>
