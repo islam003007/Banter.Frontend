@@ -172,9 +172,15 @@
 }
 
 .board__statement span {
+  /* The tight display line-height puts the descender outside the inline box.
+     Extend the background paint area so the gradient is not clipped. */
+  padding-bottom: 0.3em;
+  margin-bottom: -0.3em;
   background: var(--signal);
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   color: transparent;
 }
 
